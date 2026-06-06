@@ -20,6 +20,9 @@ import {
   Text,
   Title,
 } from '@sberbusiness/triplex-next';
+
+import { useSaveModuleData } from '../hooks/useSaveModuleData';
+import type { ModuleData } from '../hooks/useFetchModuleData';
 import { ModulePrefillFields } from './ModulePrefillFields';
 
 interface ModulePrefillProps {
@@ -30,6 +33,12 @@ interface ModulePrefillProps {
 
 type OverlayType = 'close' | null;
 
+/**
+ * ФОРМА ПРЕДЗАПОЛНЕНИЯ МОДУЛЯ
+ *
+ * Использует нативные компоненты Triplex (LightBox, Page) напрямую.
+ * Сохранение через fetch API (перехватывается MSW в dev-режиме).
+ */
 export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   isOpen,
   onClose,
@@ -38,10 +47,15 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>(null);
   const [isFormOpen, setIsFormOpen] = useState(isOpen);
 
-  const handleSave = () => {
-    onSave();
-    setIsFormOpen(false);
-    onClose();
+  const { save, isSaving } = useSaveModuleData();
+
+  const handleSave = async (values: ModuleData) => {
+    const success = await save(values);
+    if (success) {
+      onSave();
+      setIsFormOpen(false);
+      onClose();
+    }
   };
 
   const handleCancelAttempt = () => {
@@ -55,12 +69,12 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   return (
     <Form
       onSubmit={handleSave}
-      initialValues={{ confirmCorrectness: false }}
+      initialValues={{} as ModuleData}
     >
       {({ handleSubmit }) => (
         <LightBox 
           size={ELightBoxSize.MD} 
-          isLoading={false} 
+          isLoading={isSaving} 
           isTopOverlayOpened={isOverlayOpen}
         >
           <LightBox.Content>
@@ -106,14 +120,14 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
                 <Page.Header.Title>
                   <Page.Header.Title.Content>
                     <Title size={ETitleSize.H2} type={EFontType.PRIMARY}>
-                      Форма предзаполнения (RAW)
+                      Предзаполнение данных
                     </Title>
                   </Page.Header.Title.Content>
                 </Page.Header.Title>
                 
                 <Page.Header.Subhead>
                   <Text size={ETextSize.B3} type={EFontType.SECONDARY}>
-                    Пожалуйста, проверьте информацию перед продолжением (БЕЗ обёрток)
+                    Пожалуйста, заполните информацию и проверьте перед сохранением
                   </Text>
                 </Page.Header.Subhead>
               </Page.Header>
@@ -131,7 +145,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
                 <Page.Footer.Description>
                   <Page.Footer.Description.Content>
                     <Text size={ETextSize.B3} type={EFontType.SECONDARY}>
-                      Изменения вступят в силу для всех пользователей организации. (RAW)
+                      Изменения вступят в силу после сохранения.
                     </Text>
                   </Page.Footer.Description.Content>
                   <Page.Footer.Description.Controls>
@@ -140,7 +154,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
                       size={EComponentSize.MD}
                       onClick={handleSubmit}
                     >
-                      Применить
+                      Сохранить
                     </Button>
                     <Button
                       theme={EButtonTheme.SECONDARY_LIGHT}

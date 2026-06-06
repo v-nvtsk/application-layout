@@ -7,6 +7,8 @@ import { ApplicationHeader } from '../../../Components/ApplicationLayout/Applica
 import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
 import { ApplicationTopOverlay } from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
 import { ApplicationPrefillFields } from './ApplicationPrefillFields';
+import { useSaveApplicationData } from '../hooks/useSaveApplicationData';
+import type { ApplicationData } from '../hooks/useFetchApplicationData';
 
 interface ApplicationPrefillProps {
   isOpen: boolean;
@@ -24,10 +26,15 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>(null);
   const [isFormOpen, setIsFormOpen] = useState(isOpen);
 
-  const handleSave = () => {
-    onSave();
-    setIsFormOpen(false);
-    onClose();
+  const { save, isSaving } = useSaveApplicationData();
+
+  const handleSave = async (values: ApplicationData) => {
+    const success = await save(values);
+    if (success) {
+      onSave();
+      setIsFormOpen(false);
+      onClose();
+    }
   };
 
   const handleCancelAttempt = () => {
@@ -46,6 +53,7 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
       {({ handleSubmit }) => (
         <PrefillLayout
           isOpen={isFormOpen}
+          isLoading={isSaving}
           isOverlayOpen={isOverlayOpen}
           onClose={() => setActiveOverlay('close')}
           className={styles.prefillBodyWidth}

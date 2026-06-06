@@ -9,6 +9,7 @@ import { ApplicationHeader } from '../../../Components/ApplicationLayout/Applica
 import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
 
 import { useFetchModuleData, type ModuleData } from '../hooks/useFetchModuleData';
+import { useSaveModuleData } from '../hooks/useSaveModuleData';
 import { useErrorController } from '../hooks/useErrorController';
 import { ModuleDetailFields } from './ModuleDetailFields';
 import { ModuleStatusTracker } from './ModuleStatusTracker';
@@ -26,6 +27,7 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
   const [isFormOpen, setIsFormOpen] = React.useState(true);
 
   const { data, isLoading: isDataLoading, error: fetchError, refetch } = useFetchModuleData();
+  const { save, isSaving } = useSaveModuleData();
   const { error: activeError, isCriticalError, handleApiError, clearError } = useErrorController();
 
   useEffect(() => {
@@ -42,14 +44,11 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
   };
 
   const handleSave = async (values: ModuleData) => {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        alert('Данные сохранены!\n' + JSON.stringify(values, null, 2));
-        setIsFormOpen(false);
-        if (onClose) onClose();
-        resolve();
-      }, 500);
-    });
+    const success = await save(values);
+    if (success) {
+      setIsFormOpen(false);
+      if (onClose) onClose();
+    }
   };
 
   const isOverlayOpen = activeOverlay !== null;
@@ -65,7 +64,7 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
       {({ handleSubmit, submitting }) => (
         <DetailsLayout
           isOpen={isFormOpen}
-          isLoading={isDataLoading || submitting}
+          isLoading={isDataLoading || submitting || isSaving}
           isOverlayOpen={isOverlayOpen}
           onClose={() => setActiveOverlay('close')}
           className={styles.detailBodyWidth}

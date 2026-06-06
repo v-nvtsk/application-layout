@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Form } from 'react-final-form';
 
 import { useFetchApplicationData, type ApplicationData } from '../hooks/useFetchApplicationData';
+import { useSaveApplicationData } from '../hooks/useSaveApplicationData';
 import { useErrorController } from '../hooks/useErrorController';
 import { DetailsLayout } from '../../../Components/ApplicationLayout/DetailsLayout';
 import { ApplicationHeader } from '../../../Components/ApplicationLayout/ApplicationHeader';
@@ -20,14 +21,12 @@ interface SettingsDetailFormProps {
 type OverlayType = 'close' | 'delete' | null;
 
 export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }) => {
-  const [simulateError, setSimulateError] = useState(false);
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>(null);
   const [isFormOpen, setIsFormOpen] = useState(true);
 
   // 1. Data Access Layer
-  const { data, isLoading: isDataLoading, error: fetchError, refetch } = useFetchApplicationData({
-    simulateError,
-  });
+  const { data, isLoading: isDataLoading, error: fetchError, refetch } = useFetchApplicationData();
+  const { save, isSaving } = useSaveApplicationData();
 
   // 2. Error Controller
   const { error: activeError, isCriticalError, handleApiError, clearError } = useErrorController();
@@ -42,20 +41,16 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }
   }, [fetchError, handleApiError, clearError]);
 
   const handleRetry = () => {
-    setSimulateError(false);
     clearError();
     refetch();
   };
 
   const handleSave = async (values: ApplicationData) => {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        alert('Настройки сохранены!\n' + JSON.stringify(values, null, 2));
-        setIsFormOpen(false);
-        if (onClose) onClose();
-        resolve();
-      }, 500);
-    });
+    const success = await save(values);
+    if (success) {
+      setIsFormOpen(false);
+      if (onClose) onClose();
+    }
   };
 
   const handleDelete = () => {
@@ -90,7 +85,7 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }
       {({ handleSubmit, submitting }) => (
         <DetailsLayout
           isOpen={isFormOpen}
-          isLoading={isDataLoading || submitting}
+          isLoading={isDataLoading || submitting || isSaving}
           isOverlayOpen={isOverlayOpen}
           onClose={() => setActiveOverlay('close')}
           className={styles.detailBodyWidth}
@@ -116,10 +111,7 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }
           }
           contentSlot={contentSlot}
           sidebarSlot={
-            <ModuleStatusTracker
-              simulateError={simulateError}
-              onSimulateErrorChange={setSimulateError}
-            />
+            <ModuleStatusTracker />
           }
           footerSlot={
             <ApplicationFooter

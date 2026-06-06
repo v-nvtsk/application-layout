@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "preview": "vite preview",
+    "create-module": "node scripts/create-module.js",
+    "postinstall": "npx msw init public/ --save"
   },
   "dependencies": {
     "@sberbusiness/icons-next": "^1.25.0",
@@ -28,8 +32,14 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "less": "^4.2.2",
+    "msw": "^2.14.6",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

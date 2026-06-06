@@ -1,24 +1,16 @@
-import styles from './index.module.less';
-
 import {
   useRef,
   useState,
 } from 'react';
 
 import {
-  Button,
-  EButtonTheme,
-  EComponentSize,
-  ETextSize,
-  ETitleSize,
   ETriplexNextTheme,
-  Text,
   ThemeProvider,
-  Title,
 } from '@sberbusiness/triplex-next';
 
 import { ModuleDetail } from './components/ModuleDetail';
 import { ModulePrefill } from './components/ModulePrefill';
+import styles from './index.module.less';
 
 export interface ModuleTemplateProps {
   initialOpen?: boolean;
@@ -46,32 +38,8 @@ export function ModuleTemplate({ initialOpen = false, onClose, variant = 'detail
   return (
     <div ref={appRef} className={styles.appContainer}>
       <ThemeProvider scopeRef={appRef} theme={ETriplexNextTheme.LIGHT}>
-        <main className={styles.homeCard}>
-          <div className={styles.logoGroup}>
-            <span className={styles.logoBadge}>ModuleTemplate</span>
-            <span className={styles.logoBadge}>Clean</span>
-          </div>
 
-          <Title size={ETitleSize.H1} className={styles.homeTitle}>
-            Шаблон модуля
-          </Title>
-
-          <Text size={ETextSize.B2} className={styles.homeSubtitle}>
-            Это чистая заготовка для нового функционала. 
-            Используйте ее как базу для создания новых разделов.
-          </Text>
-
-          <Button
-            theme={EButtonTheme.GENERAL}
-            size={EComponentSize.LG}
-            onClick={() => setIsLightBoxOpen(true)}
-          >
-            Открыть форму ({variant})
-          </Button>
-        </main>
-
-        {isLightBoxOpen && (
-          variant === 'prefill' ? (
+        {variant === 'prefill' ? (
             <ModulePrefill
               isOpen={isLightBoxOpen}
               onClose={handleClose}
@@ -79,8 +47,7 @@ export function ModuleTemplate({ initialOpen = false, onClose, variant = 'detail
             />
           ) : (
             <ModuleDetail onClose={handleClose} />
-          )
-        )}
+          )}
       </ThemeProvider>
     </div>
   );

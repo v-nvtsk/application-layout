@@ -7,6 +7,8 @@ import { ApplicationHeader } from '../../../Components/ApplicationLayout/Applica
 import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
 import { ApplicationTopOverlay } from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
 import { ModulePrefillFields } from './ModulePrefillFields';
+import { useSaveModuleData } from '../hooks/useSaveModuleData';
+import type { ModuleData } from '../hooks/useFetchModuleData';
 
 interface ModulePrefillProps {
   isOpen: boolean;
@@ -24,10 +26,15 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>(null);
   const [isFormOpen, setIsFormOpen] = useState(isOpen);
 
-  const handleSave = () => {
-    onSave();
-    setIsFormOpen(false);
-    onClose();
+  const { save, isSaving } = useSaveModuleData();
+
+  const handleSave = async (values: ModuleData) => {
+    const success = await save(values);
+    if (success) {
+      onSave();
+      setIsFormOpen(false);
+      onClose();
+    }
   };
 
   const handleCancelAttempt = () => {
@@ -46,6 +53,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
       {({ handleSubmit }) => (
         <PrefillLayout
           isOpen={isFormOpen}
+          isLoading={isSaving}
           isOverlayOpen={isOverlayOpen}
           onClose={() => setActiveOverlay('close')}
           className={styles.prefillBodyWidth}

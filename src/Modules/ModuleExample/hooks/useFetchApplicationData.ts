@@ -8,25 +8,15 @@ export interface ApplicationData {
   twoFactorEnabled: boolean;
 }
 
-const INITIAL_SETTINGS: ApplicationData = {
-  cardName: 'Основная карта',
-  cardNumber: '4532',
-  notificationsEnabled: true,
-  marketingEmails: false,
-  twoFactorEnabled: true,
-};
-
-export interface FetchDataOptions {
-  simulateError?: boolean;
-}
-
 interface FetchError {
   status: number;
   message: string;
   code: string;
 }
 
-export function useFetchApplicationData(options?: FetchDataOptions) {
+const API_MODULE_NAME = 'module-example';
+
+export function useFetchApplicationData() {
   const [data, setData] = useState<ApplicationData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<FetchError | null>(null);
@@ -39,30 +29,42 @@ export function useFetchApplicationData(options?: FetchDataOptions) {
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
-    
-    const timer = setTimeout(() => {
-      if (!isMounted) return;
+    const controller = new AbortController();
 
-      if (options?.simulateError) {
+    fetch(`/api/v1/${API_MODULE_NAME}/data`, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((errBody: Partial<FetchError>) => {
+            return Promise.reject({
+              status: res.status,
+              message: errBody.message || `Ошибка сервера (${res.status})`,
+              code: errBody.code || 'UNKNOWN_ERROR',
+            });
+          });
+        }
+        return res.json();
+      })
+      .then((responseData: ApplicationData) => {
+        setData(responseData);
+        setError(null);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') return;
+
         setError({
-          status: 500,
-          message: 'Ошибка подключения к серверу СберБизнес. Пожалуйста, проверьте соединение и попробуйте позже.',
-          code: 'INTERNAL_SERVER_ERROR',
+          status: err.status || 500,
+          message: err.message || 'Ошибка подключения к серверу СберБизнес. Пожалуйста, проверьте соединение и попробуйте позже.',
+          code: err.code || 'FETCH_ERROR',
         });
         setData(null);
-      } else {
-        setData(INITIAL_SETTINGS);
-        setError(null);
-      }
-      setIsLoading(false);
-    }, 600); // Simulate network latency
+        setIsLoading(false);
+      });
 
     return () => {
-      isMounted = false;
-      clearTimeout(timer);
+      controller.abort();
     };
-  }, [fetchTrigger, options?.simulateError]);
+  }, [fetchTrigger]);
 
   return { data, isLoading, error, refetch };
 }
