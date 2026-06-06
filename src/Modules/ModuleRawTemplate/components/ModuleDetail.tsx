@@ -23,11 +23,9 @@ import {
 } from '@sberbusiness/triplex-next';
 
 import { useErrorController } from '../hooks/useErrorController';
-import {
-  type ModuleData,
-  useFetchModuleData,
-} from '../hooks/useFetchModuleData';
+import { useFetchModuleData } from '../hooks/useFetchModuleData';
 import { useSaveModuleData } from '../hooks/useSaveModuleData';
+import type { ModuleData } from '../Models';
 import { ModuleDetailDialogs } from './ModuleDetailDialogs';
 import { ModuleDetailError } from './ModuleDetailError';
 import { ModuleDetailFields } from './ModuleDetailFields';

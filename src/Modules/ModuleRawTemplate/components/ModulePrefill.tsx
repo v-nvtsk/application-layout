@@ -1,7 +1,7 @@
-import styles from './ModulePrefill.module.less';
-
 import React, { useState } from 'react';
+
 import { Form } from 'react-final-form';
+
 import {
   Button,
   Confirm,
@@ -21,8 +21,9 @@ import {
   Title,
 } from '@sberbusiness/triplex-next';
 
+import type { ModuleData } from '../Models';
 import { useSaveModuleData } from '../hooks/useSaveModuleData';
-import type { ModuleData } from '../hooks/useFetchModuleData';
+import styles from './ModulePrefill.module.less';
 import { ModulePrefillFields } from './ModulePrefillFields';
 
 interface ModulePrefillProps {
@@ -49,6 +50,21 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
 
   const { save, isSaving } = useSaveModuleData();
 
+  // ==========================================
+  // ТОЧКА ВАЛИДАЦИИ ФОРМЫ (FORM VALIDATION POINT)
+  // ==========================================
+  const handleValidate = (_values: ModuleData) => {
+    const errors: Record<string, string> = {};
+    // Добавьте логику валидации полей формы здесь. Например:
+    // if (!values.someField) {
+    //   errors.someField = 'Обязательное поле';
+    // }
+    return errors;
+  };
+
+  // ==========================================
+  // ТОЧКА САБМИТА ДАННЫХ ФОРМЫ (FORM SUBMIT POINT)
+  // ==========================================
   const handleSave = async (values: ModuleData) => {
     const success = await save(values);
     if (success) {
@@ -69,6 +85,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   return (
     <Form
       onSubmit={handleSave}
+      validate={handleValidate}
       initialValues={{} as ModuleData}
     >
       {({ handleSubmit }) => (
@@ -78,42 +95,40 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
           isTopOverlayOpened={isOverlayOpen}
         >
           <LightBox.Content>
-            {activeOverlay === 'close' && (
-              <LightBox.TopOverlay opened={true} onClose={() => setActiveOverlay(null)}>
-                <Confirm>
-                  <Confirm.Content>
-                    <Confirm.Content.Title size={ETitleSize.H3}>Внимание</Confirm.Content.Title>
-                    <Confirm.Content.SubTitle size={ETextSize.B3}>
-                      Несохранённые данные будут утеряны. Вы уверены, что хотите выйти?
-                    </Confirm.Content.SubTitle>
-                  </Confirm.Content>
-                  <Confirm.Controls>
-                    <Button
-                      theme={EButtonTheme.SECONDARY}
-                      size={EComponentSize.MD}
-                      onClick={() => setActiveOverlay(null)}
-                    >
-                      Отмена
-                    </Button>
-                    <Button
-                      theme={EButtonTheme.DANGER}
-                      size={EComponentSize.MD}
-                      onClick={() => {
-                        setIsFormOpen(false);
-                        onClose();
-                      }}
-                    >
-                      Выйти
-                    </Button>
-                  </Confirm.Controls>
-                  <Confirm.Close
-                    title="Закрыть"
-                    clickByEsc={true}
+            <LightBox.TopOverlay opened={activeOverlay === 'close'} onClose={() => setActiveOverlay(null)}>
+              <Confirm>
+                <Confirm.Content>
+                  <Confirm.Content.Title size={ETitleSize.H3}>Внимание</Confirm.Content.Title>
+                  <Confirm.Content.SubTitle size={ETextSize.B3}>
+                    Несохранённые данные будут утеряны. Вы уверены, что хотите выйти?
+                  </Confirm.Content.SubTitle>
+                </Confirm.Content>
+                <Confirm.Controls>
+                  <Button
+                    theme={EButtonTheme.SECONDARY}
+                    size={EComponentSize.MD}
                     onClick={() => setActiveOverlay(null)}
-                  />
-                </Confirm>
-              </LightBox.TopOverlay>
-            )}
+                  >
+                    Отмена
+                  </Button>
+                  <Button
+                    theme={EButtonTheme.DANGER}
+                    size={EComponentSize.MD}
+                    onClick={() => {
+                      setIsFormOpen(false);
+                      onClose();
+                    }}
+                  >
+                    Выйти
+                  </Button>
+                </Confirm.Controls>
+                <Confirm.Close
+                  title="Закрыть"
+                  clickByEsc={true}
+                  onClick={() => setActiveOverlay(null)}
+                />
+              </Confirm>
+            </LightBox.TopOverlay>
 
             <Page className={styles.prefillBodyWidth}>
               <Page.Header type={EHeaderPageType.FIRST} sticky>

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-
-export type ModuleData = Record<string, unknown>;
+import type { ModuleData } from '../Models';
 
 interface FetchError {
   status: number;

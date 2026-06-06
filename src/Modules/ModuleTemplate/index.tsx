@@ -24,7 +24,27 @@ export interface ModuleTemplateProps {
  * Данный компонент является оберткой для инициализации темы и отображения 
  * основных форм модуля (Detail/Prefill).
  */
-export function ModuleTemplate({ initialOpen = false, onClose, variant = 'detail' }: ModuleTemplateProps) {
+export function ModuleTemplate({
+  initialOpen = true,
+  onClose,
+  variant,
+}: ModuleTemplateProps = {}) {
+  // Определяем вариант отображения: приоритет у пропса, затем URL query параметр, затем по умолчанию 'detail'
+  const getActiveVariant = (): 'detail' | 'prefill' => {
+    if (variant) {
+      return variant;
+    }
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlVariant = searchParams.get('variant');
+      if (urlVariant === 'prefill' || urlVariant === 'detail') {
+        return urlVariant as 'detail' | 'prefill';
+      }
+    }
+    return 'detail';
+  };
+
+  const activeVariant = getActiveVariant();
   const [isLightBoxOpen, setIsLightBoxOpen] = useState(initialOpen);
   const appRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +52,8 @@ export function ModuleTemplate({ initialOpen = false, onClose, variant = 'detail
     setIsLightBoxOpen(false);
     if (onClose) {
       onClose();
+    } else if (typeof window !== 'undefined' && window.history) {
+      window.history.back();
     }
   };
 
@@ -39,7 +61,7 @@ export function ModuleTemplate({ initialOpen = false, onClose, variant = 'detail
     <div ref={appRef} className={styles.appContainer}>
       <ThemeProvider scopeRef={appRef} theme={ETriplexNextTheme.LIGHT}>
 
-        {variant === 'prefill' ? (
+        {activeVariant === 'prefill' ? (
             <ModulePrefill
               isOpen={isLightBoxOpen}
               onClose={handleClose}

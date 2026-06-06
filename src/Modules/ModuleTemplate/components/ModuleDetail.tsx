@@ -8,9 +8,10 @@ import {
 import { ApplicationHeader } from '../../../Components/ApplicationLayout/ApplicationHeader';
 import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
 
-import { useFetchModuleData, type ModuleData } from '../hooks/useFetchModuleData';
+import { useFetchModuleData } from '../hooks/useFetchModuleData';
 import { useSaveModuleData } from '../hooks/useSaveModuleData';
 import { useErrorController } from '../hooks/useErrorController';
+import type { ModuleData } from '../Models';
 import { ModuleDetailFields } from './ModuleDetailFields';
 import { ModuleStatusTracker } from './ModuleStatusTracker';
 import { ModuleDetailError } from './ModuleDetailError';

@@ -1,14 +1,23 @@
-import styles from './ModulePrefill.module.less';
-
 import React, { useState } from 'react';
+
 import { Form } from 'react-final-form';
-import { PrefillLayout } from '../../../Components/ApplicationLayout/PrefillLayout';
-import { ApplicationHeader } from '../../../Components/ApplicationLayout/ApplicationHeader';
-import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
-import { ApplicationTopOverlay } from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
-import { ModulePrefillFields } from './ModulePrefillFields';
+
+import {
+  ApplicationFooter,
+} from '../../../Components/ApplicationLayout/ApplicationFooter';
+import {
+  ApplicationHeader,
+} from '../../../Components/ApplicationLayout/ApplicationHeader';
+import {
+  ApplicationTopOverlay,
+} from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
+import {
+  PrefillLayout,
+} from '../../../Components/ApplicationLayout/PrefillLayout';
+import type { ModuleData } from '../Models';
 import { useSaveModuleData } from '../hooks/useSaveModuleData';
-import type { ModuleData } from '../hooks/useFetchModuleData';
+import styles from './ModulePrefill.module.less';
+import { ModulePrefillFields } from './ModulePrefillFields';
 
 interface ModulePrefillProps {
   isOpen: boolean;
@@ -28,6 +37,21 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
 
   const { save, isSaving } = useSaveModuleData();
 
+  // ==========================================
+  // ТОЧКА ВАЛИДАЦИИ ФОРМЫ (FORM VALIDATION POINT)
+  // ==========================================
+  const handleValidate = (_values: ModuleData) => {
+    const errors: Record<string, string> = {};
+    // Добавьте логику валидации полей формы здесь. Например:
+    // if (!values.someField) {
+    //   errors.someField = 'Обязательное поле';
+    // }
+    return errors;
+  };
+
+  // ==========================================
+  // ТОЧКА САБМИТА ДАННЫХ ФОРМЫ (FORM SUBMIT POINT)
+  // ==========================================
   const handleSave = async (values: ModuleData) => {
     const success = await save(values);
     if (success) {
@@ -48,6 +72,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   return (
     <Form
       onSubmit={handleSave}
+      validate={handleValidate}
       initialValues={{ confirmCorrectness: false }}
     >
       {({ handleSubmit }) => (
@@ -58,19 +83,17 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
           onClose={() => setActiveOverlay('close')}
           className={styles.prefillBodyWidth}
           dialogsSlot={
-            activeOverlay === 'close' ? (
-              <ApplicationTopOverlay
-                isOpen={true}
-                onClose={() => setActiveOverlay(null)}
-                onConfirm={() => {
-                  setIsFormOpen(false);
-                  onClose();
-                }}
-                title="Внимание"
-                subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите выйти?"
-                confirmText="Выйти"
-              />
-            ) : null
+            <ApplicationTopOverlay
+              isOpen={activeOverlay === 'close'}
+              onClose={() => setActiveOverlay(null)}
+              onConfirm={() => {
+                setIsFormOpen(false);
+                onClose();
+              }}
+              title="Внимание"
+              subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите выйти?"
+              confirmText="Выйти"
+            />
           }
           headerSlot={
             <ApplicationHeader

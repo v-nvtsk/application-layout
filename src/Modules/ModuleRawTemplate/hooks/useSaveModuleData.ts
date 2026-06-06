@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { ModuleData } from './useFetchModuleData';
+import type { ModuleData } from '../Models';
 
 interface SaveError {
   status: number;

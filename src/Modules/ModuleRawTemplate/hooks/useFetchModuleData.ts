@@ -4,11 +4,7 @@ import {
   useState,
 } from 'react';
 
-/**
- * Данные модуля — структура соответствует ответу API.
- * При создании нового модуля замените Record<string, any> на интерфейс с реальными полями.
- */
-export type ModuleData = Record<string, unknown>;
+import type { ModuleData } from '../Models';
 
 interface FetchError {
   status: number;
