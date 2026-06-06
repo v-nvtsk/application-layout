@@ -164,7 +164,7 @@ const fileRenames = getFileRenames(moduleName);
 const createdFiles = copyDir(templateDir, targetDir, replacements, fileRenames);
 
 console.log('📁 Созданные файлы:');
-createdFiles.forEach((f) => console.log(`   ✅ ${f}`));
+createdFiles.forEach((f) => { console.log(`   ✅ ${f}`) });
 
 console.log(`\n✨ Модуль "${moduleName}" успешно создан!`);
 console.log(`   Путь: src/Modules/${moduleName}/`);

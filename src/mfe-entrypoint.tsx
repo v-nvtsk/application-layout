@@ -5,7 +5,7 @@ export interface MfeProps {
   initialOpen?: boolean;
   onClose?: () => void;
   variant?: 'detail' | 'prefill';
-  mode?: 'example' | 'template' | 'raw';
+  mode?: 'example' | 'template' | 'raw' | 'qualification';
 }
 
 export async function mount(container: HTMLElement, props: MfeProps = {}) {
@@ -20,6 +20,11 @@ export async function mount(container: HTMLElement, props: MfeProps = {}) {
     case 'raw': {
       const { ModuleRawTemplate } = await import('./Modules/ModuleRawTemplate');
       Component = ModuleRawTemplate;
+      break;
+    }
+    case 'qualification': {
+      const { Qualification } = await import('./Modules/Qualification');
+      Component = Qualification;
       break;
     }
     case 'example':

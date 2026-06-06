@@ -27,31 +27,62 @@ import {
 } from '@sberbusiness/triplex-next';
 
 export function HostApp() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'payments' | 'example-prefill' | 'example-detail' | 'template-prefill' | 'template-detail' | 'raw-prefill' | 'raw-detail'>('dashboard');
+  const [activeTab, setActiveTab] = useState<
+    | "dashboard"
+    | "payments"
+    | "example-prefill"
+    | "example-detail"
+    | "template-prefill"
+    | "template-detail"
+    | "raw-prefill"
+    | "raw-detail"
+    | "qualification-prefill"
+    | "qualification-detail"
+  >("dashboard");
   const [mfeLoading, setMfeLoading] = useState(false);
   const mfeContainerRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
 
-  const handleTabChange = useCallback((tab: 'dashboard' | 'payments' | 'example-prefill' | 'example-detail' | 'template-prefill' | 'template-detail' | 'raw-prefill' | 'raw-detail') => {
-    setActiveTab(tab);
-  }, []);
+  const handleTabChange = useCallback(
+    (
+      tab:
+        | "dashboard"
+        | "payments"
+        | "example-prefill"
+        | "example-detail"
+        | "template-prefill"
+        | "template-detail"
+        | "raw-prefill"
+        | "raw-detail"
+        | "qualification-prefill"
+        | "qualification-detail",
+    ) => {
+      setActiveTab(tab);
+    },
+    [],
+  );
 
   // Dynamic simulation of loading MFE over network
   useEffect(() => {
-    const isMfeTab = activeTab.includes('example-') || activeTab.includes('template-') || activeTab.includes('raw-');
-    
+    const isMfeTab =
+      activeTab.includes("example-") ||
+      activeTab.includes("template-") ||
+      activeTab.includes("raw-") ||
+      activeTab.includes("qualification-");
+
     if (isMfeTab) {
-      let mode: 'example' | 'template' | 'raw' = 'example';
-      if (activeTab.startsWith('template-')) mode = 'template';
-      if (activeTab.startsWith('raw-')) mode = 'raw';
-      
-      const variant = activeTab.includes('prefill') ? 'prefill' : 'detail';
+      let mode: "example" | "template" | "raw" | "qualification" = "example";
+      if (activeTab.startsWith("template-")) mode = "template";
+      if (activeTab.startsWith("raw-")) mode = "raw";
+      if (activeTab.startsWith("qualification-")) mode = "qualification";
+
+      const variant = activeTab.includes("prefill") ? "prefill" : "detail";
       // Set loading state asynchronously to avoid lint warning about sync setState in effect
       const loadingTimer = setTimeout(() => setMfeLoading(true), 0);
 
       const timer = setTimeout(() => {
         // Dynamically import the remote entrypoint chunk
-        import('./mfe-entrypoint')
+        import("./mfe-entrypoint")
           .then((mfe) => {
             setMfeLoading(false);
 
@@ -64,14 +95,14 @@ export function HostApp() {
                   mode,
                   onClose: () => {
                     // MFE callback to return to host dashboard
-                    handleTabChange('dashboard');
+                    handleTabChange("dashboard");
                   },
                 });
               }
             }, 50);
           })
           .catch((err) => {
-            console.error('Failed to load MFE:', err);
+            console.error("Failed to load MFE:", err);
             setMfeLoading(false);
           });
       }, 600); // Simulated latency
@@ -83,7 +114,7 @@ export function HostApp() {
         clearTimeout(timer);
         // Unmount clean-up
         if (currentContainer) {
-          import('./mfe-entrypoint').then((mfe) => {
+          import("./mfe-entrypoint").then((mfe) => {
             mfe.unmount(currentContainer);
           });
         }
@@ -116,79 +147,118 @@ export function HostApp() {
           <aside className="host-sidebar">
             <nav className="host-nav">
               <button
-                className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-                onClick={() => handleTabChange('dashboard')}
+                className={`nav-item ${activeTab === "dashboard" ? "active" : ""}`}
+                onClick={() => handleTabChange("dashboard")}
               >
                 <AccountsStrokePrdIcon20 paletteIndex={0} />
                 <span>Главная</span>
               </button>
               <button
-                className={`nav-item ${activeTab === 'payments' ? 'active' : ''}`}
-                onClick={() => handleTabChange('payments')}
+                className={`nav-item ${activeTab === "payments" ? "active" : ""}`}
+                onClick={() => handleTabChange("payments")}
               >
                 <CashtransitStrokePrdIcon20 paletteIndex={0} />
                 <span>Платежи</span>
               </button>
               <button
-                className={`nav-item ${activeTab === 'example-prefill' ? 'active' : ''}`}
-                onClick={() => handleTabChange('example-prefill')}
+                className={`nav-item ${activeTab === "example-prefill" ? "active" : ""}`}
+                onClick={() => handleTabChange("example-prefill")}
               >
                 <SettingsStrokeSrvIcon24 paletteIndex={0} />
                 <span>Предзаполнение (Ex)</span>
               </button>
               <button
-                className={`nav-item ${activeTab === 'example-detail' ? 'active' : ''}`}
-                onClick={() => handleTabChange('example-detail')}
+                className={`nav-item ${activeTab === "example-detail" ? "active" : ""}`}
+                onClick={() => handleTabChange("example-detail")}
               >
                 <SettingsStrokeSrvIcon24 paletteIndex={0} />
                 <span>Настройки (Example)</span>
               </button>
-              
+
               <div className="nav-divider" />
-              
+
               <button
-                className={`nav-item ${activeTab === 'template-prefill' ? 'active' : ''}`}
-                onClick={() => handleTabChange('template-prefill')}
+                className={`nav-item ${activeTab === "template-prefill" ? "active" : ""}`}
+                onClick={() => handleTabChange("template-prefill")}
               >
-                <SettingsStrokeSrvIcon24 paletteIndex={0} className="nav-icon-template" />
+                <SettingsStrokeSrvIcon24
+                  paletteIndex={0}
+                  className="nav-icon-template"
+                />
                 <span>Шаблон (Prefill)</span>
               </button>
               <button
-                className={`nav-item ${activeTab === 'template-detail' ? 'active' : ''}`}
-                onClick={() => handleTabChange('template-detail')}
+                className={`nav-item ${activeTab === "template-detail" ? "active" : ""}`}
+                onClick={() => handleTabChange("template-detail")}
               >
-                <SettingsStrokeSrvIcon24 paletteIndex={0} className="nav-icon-template" />
+                <SettingsStrokeSrvIcon24
+                  paletteIndex={0}
+                  className="nav-icon-template"
+                />
                 <span>Шаблон (Detail)</span>
               </button>
               <button
-                className={`nav-item ${activeTab === 'raw-prefill' ? 'active' : ''}`}
-                onClick={() => handleTabChange('raw-prefill')}
+                className={`nav-item ${activeTab === "raw-prefill" ? "active" : ""}`}
+                onClick={() => handleTabChange("raw-prefill")}
               >
-                <SettingsStrokeSrvIcon24 paletteIndex={0} className="nav-icon-raw" />
+                <SettingsStrokeSrvIcon24
+                  paletteIndex={0}
+                  className="nav-icon-raw"
+                />
                 <span>RAW Prefill</span>
               </button>
               <button
-                className={`nav-item ${activeTab === 'raw-detail' ? 'active' : ''}`}
-                onClick={() => handleTabChange('raw-detail')}
+                className={`nav-item ${activeTab === "raw-detail" ? "active" : ""}`}
+                onClick={() => handleTabChange("raw-detail")}
               >
-                <SettingsStrokeSrvIcon24 paletteIndex={0} className="nav-icon-raw" />
+                <SettingsStrokeSrvIcon24
+                  paletteIndex={0}
+                  className="nav-icon-raw"
+                />
                 <span>RAW Detail</span>
               </button>
+
+              <button
+                className={`nav-item ${activeTab === "qualification-prefill" ? "active" : ""}`}
+                onClick={() => handleTabChange("qualification-prefill")}
+              >
+                <SettingsStrokeSrvIcon24
+                  paletteIndex={0}
+                  className="nav-icon-raw"
+                />
+                <span>qualification-prefill</span>
+              </button>
+              <button
+                className={`nav-item ${activeTab === "qualification-detail" ? "active" : ""}`}
+                onClick={() => handleTabChange("qualification-detail")}
+              >
+                <SettingsStrokeSrvIcon24
+                  paletteIndex={0}
+                  className="nav-icon-raw"
+                />
+                <span>qualification-detail</span>
+              </button>
+
             </nav>
           </aside>
 
           {/* Main Content Area */}
           <main className="host-main">
-            {activeTab === 'dashboard' && (
+            {activeTab === "dashboard" && (
               <div className="host-card">
-                <Title size={ETitleSize.H1} className="main-title" type={EFontType.PRIMARY_INVERT}>
+                <Title
+                  size={ETitleSize.H1}
+                  className="main-title"
+                  type={EFontType.PRIMARY_INVERT}
+                >
                   Добро пожаловать в СберБизнес
                 </Title>
                 <Text size={ETextSize.B2} type={EFontType.SECONDARY_INVERT}>
-                  Это главная страница хост-приложения (Host Shell). Вы можете управлять счетами, 
-                  просматривать выписки и переходить в независимые модули-микрофронтенды.
+                  Это главная страница хост-приложения (Host Shell). Вы можете
+                  управлять счетами, просматривать выписки и переходить в
+                  независимые модули-микрофронтенды.
                 </Text>
-                
+
                 <div className="stats-grid">
                   <div className="stat-card">
                     <span className="stat-label">Расчетный счет</span>
@@ -202,37 +272,40 @@ export function HostApp() {
 
                 <div className="action-banner">
                   <div className="banner-content">
-                    <Title size={ETitleSize.H3} type={EFontType.PRIMARY_INVERT}>Демонстрация подходов</Title>
+                    <Title size={ETitleSize.H3} type={EFontType.PRIMARY_INVERT}>
+                      Демонстрация подходов
+                    </Title>
                     <Text size={ETextSize.B3} type={EFontType.SECONDARY_INVERT}>
-                      Сравните реализацию: полноценный пример, чистый шаблон и RAW-реализацию.
+                      Сравните реализацию: полноценный пример, чистый шаблон и
+                      RAW-реализацию.
                     </Text>
                   </div>
                   <div className="banner-controls">
                     <Button
                       theme={EButtonTheme.GENERAL}
                       size={EComponentSize.MD}
-                      onClick={() => handleTabChange('example-prefill')}
+                      onClick={() => handleTabChange("example-prefill")}
                     >
                       Пример (Prefill)
                     </Button>
                     <Button
                       theme={EButtonTheme.GENERAL}
                       size={EComponentSize.MD}
-                      onClick={() => handleTabChange('example-detail')}
+                      onClick={() => handleTabChange("example-detail")}
                     >
                       Пример (Detail)
                     </Button>
                     <Button
                       theme={EButtonTheme.SECONDARY}
                       size={EComponentSize.MD}
-                      onClick={() => handleTabChange('template-detail')}
+                      onClick={() => handleTabChange("template-detail")}
                     >
                       Шаблон
                     </Button>
                     <Button
                       theme={EButtonTheme.DANGER}
                       size={EComponentSize.MD}
-                      onClick={() => handleTabChange('raw-detail')}
+                      onClick={() => handleTabChange("raw-detail")}
                     >
                       RAW вариант
                     </Button>
@@ -241,32 +314,46 @@ export function HostApp() {
               </div>
             )}
 
-            {activeTab === 'payments' && (
+            {activeTab === "payments" && (
               <div className="host-card">
-                <Title size={ETitleSize.H1} className="main-title" type={EFontType.PRIMARY_INVERT}>
+                <Title
+                  size={ETitleSize.H1}
+                  className="main-title"
+                  type={EFontType.PRIMARY_INVERT}
+                >
                   Платежные поручения
                 </Title>
                 <Text size={ETextSize.B2} type={EFontType.PRIMARY_INVERT}>
-                  Здесь отображается журнал ваших платежей. Вы можете создать новый рублевый 
-                  или валютный платеж контрагенту.
+                  Здесь отображается журнал ваших платежей. Вы можете создать
+                  новый рублевый или валютный платеж контрагенту.
                 </Text>
                 <div className="empty-state">
                   <span className="empty-icon">📁</span>
-                  <Text size={ETextSize.B3} type={EFontType.PRIMARY_INVERT}>Нет исходящих платежей за сегодня</Text>
+                  <Text size={ETextSize.B3} type={EFontType.PRIMARY_INVERT}>
+                    Нет исходящих платежей за сегодня
+                  </Text>
                 </div>
               </div>
             )}
 
-            {(activeTab.includes('example-') || activeTab.includes('template-') || activeTab.includes('raw-')) && (
+            {(activeTab.includes("example-") ||
+              activeTab.includes("template-") ||
+              activeTab.includes("raw-") ||
+              activeTab.includes("qualification-")) && (
               <div className="mfe-loading-wrapper">
                 {mfeLoading && (
                   <div className="mfe-loader-card">
                     <div className="spinner"></div>
-                    <Title size={ETitleSize.H3} className="loader-title" type={EFontType.PRIMARY_INVERT}>
+                    <Title
+                      size={ETitleSize.H3}
+                      className="loader-title"
+                      type={EFontType.PRIMARY_INVERT}
+                    >
                       Загрузка микрофронтенда...
                     </Title>
                     <Text size={ETextSize.B3} type={EFontType.PRIMARY_INVERT}>
-                      Загружается чанк `mfe-entrypoint.js` по сети ({activeTab.includes('prefill') ? 'Prefill' : 'Detail'})
+                      Загружается чанк `mfe-entrypoint.js` по сети (
+                      {activeTab.includes("prefill") ? "Prefill" : "Detail"})
                     </Text>
                   </div>
                 )}
