@@ -1,0 +1,25 @@
+/* Two-column layout inside detail page body */
+.detailBodyGrid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.detailBodyLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detailBodyRight {
+  position: sticky;
+  top: calc(var(--page-header-height, 140px) + var(--page-header-gap, 24px));
+  z-index: 2;
+}
+
+.detailsLayoutErrorWrapper {
+  width: 100%;
+}

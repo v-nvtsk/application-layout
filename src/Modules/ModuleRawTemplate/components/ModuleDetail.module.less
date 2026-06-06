@@ -1,0 +1,50 @@
+.detailBodyWidth {
+  /* 
+    ======================================================================
+    КОНСТАНТЫ ЛЕЙАУТА ДЕТАЛЬНОЙ ФОРМЫ (LAYOUT CONSTANTS)
+    
+    Если вы меняете состав шапки страницы (добавляете subTitle, длинный заголовок,
+    меняющий количество строк, или новые управляющие кнопки), измените 
+    эту высоту, чтобы боковой статус-трекер прилипал ровно под шапкой.
+    ======================================================================
+  */
+  --page-header-height: 140px; /* Дефолтное значение для шаблона (без подзаголовка) */
+  --page-header-gap: 24px;
+
+  min-width: 1008px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.templateSectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+/* Copy-pasted grid logic from DetailsLayout.module.less */
+.detailBodyGrid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.detailBodyLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detailBodyRight {
+  position: sticky;
+  top: calc(var(--page-header-height, 140px) + var(--page-header-gap, 24px));
+  z-index: 2;
+}
+
+.detailsLayoutErrorWrapper {
+  width: 100%;
+}
