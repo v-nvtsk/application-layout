@@ -1,5 +1,6 @@
-export { DetailsLayout } from './DetailsLayout';
-export { PrefillLayout } from './PrefillLayout';
+export { DetailsLayout } from './DetailsLayout/DetailsLayout';
+export { PrefillLayout } from './PrefillLayout/PrefillLayout';
 export { ApplicationHeader } from './ApplicationHeader';
 export { ApplicationFooter } from './ApplicationFooter';
-export { ApplicationTopOverlay } from './ApplicationTopOverlay';
+export { ApplicationTopOverlay } from './ApplicationTopOverlay/ApplicationTopOverlay';
+

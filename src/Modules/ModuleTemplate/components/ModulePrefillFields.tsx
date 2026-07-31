@@ -8,8 +8,8 @@ import {
 } from '@sberbusiness/triplex-next';
 
 import { ApplicationIsland } from '../../../Components/ApplicationIsland';
-import { FieldsGrid, FieldsGridCell } from '../../../Components/FieldsGrid';
-import { BasicRow } from '../../../Components/BasicRow';
+import { FieldsGrid, FieldsGridCell } from '../../../Components/FieldsGrid/FieldsGrid';
+import { BasicRow } from '../../../Components/BasicRow/BasicRow';
 import styles from './ModulePrefill.module.less';
 
 /**

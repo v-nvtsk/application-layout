@@ -1,35 +1,45 @@
-import styles from './ModuleDetail.module.less';
+import React, { useEffect } from "react";
 
-import React, { useEffect } from 'react';
-import { Form } from 'react-final-form';
+import { Form } from "react-final-form";
+
 import {
+  ApplicationFooter,
+  ApplicationHeader,
   DetailsLayout,
-} from '../../../Components/ApplicationLayout/DetailsLayout';
-import { ApplicationHeader } from '../../../Components/ApplicationLayout/ApplicationHeader';
-import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
-
-import { useFetchModuleData } from '../hooks/useFetchModuleData';
-import { useSaveModuleData } from '../hooks/useSaveModuleData';
-import { useErrorController } from '../hooks/useErrorController';
-import type { ModuleData } from '../Models';
-import { ModuleDetailFields } from './ModuleDetailFields';
-import { ModuleStatusTracker } from './ModuleStatusTracker';
-import { ModuleDetailError } from './ModuleDetailError';
-import { ModuleDetailDialogs } from './ModuleDetailDialogs';
+} from "../../../Components/ApplicationLayout";
+import { useErrorController } from "../hooks/useErrorController";
+import { useFetchModuleData } from "../hooks/useFetchModuleData";
+import { useSaveModuleData } from "../hooks/useSaveModuleData";
+import type { ModuleData } from "../Models";
+import styles from "./ModuleDetail.module.less";
+import { ModuleDetailDialogs } from "./ModuleDetailDialogs";
+import { ModuleDetailError } from "./ModuleDetailError";
+import { ModuleDetailFields } from "./ModuleDetailFields";
+import { ModuleStatusTracker } from "./ModuleStatusTracker";
 
 interface ModuleDetailProps {
   onClose?: () => void;
 }
 
-type OverlayType = 'close' | 'delete' | null;
+type OverlayType = "close" | "delete" | null;
 
 export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
   const [activeOverlay, setActiveOverlay] = React.useState<OverlayType>(null);
   const [isFormOpen, setIsFormOpen] = React.useState(true);
 
-  const { data, isLoading: isDataLoading, error: fetchError, refetch } = useFetchModuleData();
+  const {
+    data,
+    isLoading: isDataLoading,
+    error: fetchError,
+    refetch,
+  } = useFetchModuleData();
   const { save, isSaving } = useSaveModuleData();
-  const { error: activeError, isCriticalError, handleApiError, clearError } = useErrorController();
+  const {
+    error: activeError,
+    isCriticalError,
+    handleApiError,
+    clearError,
+  } = useErrorController();
 
   useEffect(() => {
     if (fetchError) {
@@ -67,7 +77,7 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
           isOpen={isFormOpen}
           isLoading={isDataLoading || submitting || isSaving}
           isOverlayOpen={isOverlayOpen}
-          onClose={() => setActiveOverlay('close')}
+          onClose={() => setActiveOverlay("close")}
           className={styles.detailBodyWidth}
           dialogsSlot={
             <ModuleDetailDialogs
@@ -102,7 +112,10 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
           footerSlot={
             <ApplicationFooter
               onSave={handleSubmit}
-              onCancelAttempt={() => setActiveOverlay('close')}
+              onCancelAttempt={() => setActiveOverlay("close")}
+              description="Внимание! Изменения вступят в силу немедленно."
+              saveText="Сохранить"
+              cancelText="Отменить"
             />
           }
         />

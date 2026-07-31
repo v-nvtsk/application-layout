@@ -1,42 +1,60 @@
-import styles from './ApplicationDetail.module.less';
+import React, { useEffect, useState } from "react";
 
-import React, { useState, useEffect } from 'react';
-import { Form } from 'react-final-form';
+import { Form } from "react-final-form";
 
-import { useFetchApplicationData } from '../hooks/useFetchApplicationData';
-import { useSaveApplicationData } from '../hooks/useSaveApplicationData';
-import { useErrorController } from '../hooks/useErrorController';
-import type { ApplicationData } from '../Models';
-import { DetailsLayout } from '../../../Components/ApplicationLayout/DetailsLayout';
-import { ApplicationHeader } from '../../../Components/ApplicationLayout/ApplicationHeader';
-import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
+import {
+  DeleteStrokeSrvIcon24,
+  PrintStrokeSrvIcon24,
+} from "@sberbusiness/icons-next";
 import {
   Button,
   EButtonTheme,
   EComponentSize,
-} from '@sberbusiness/triplex-next';
-import { PrintStrokeSrvIcon24, DeleteStrokeSrvIcon24 } from '@sberbusiness/icons-next';
-import { ApplicationDetailFields } from './ApplicationDetailFields';
-import { ModuleStatusTracker } from './ModuleStatusTracker';
-import { ApplicationDetailError } from './ApplicationDetailError';
-import { ApplicationDetailDialogs } from './ApplicationDetailDialogs';
+} from "@sberbusiness/triplex-next";
+
+import {
+  ApplicationFooter,
+  ApplicationHeader,
+  DetailsLayout,
+} from "../../../Components/ApplicationLayout";
+import { useErrorController } from "../hooks/useErrorController";
+import { useFetchApplicationData } from "../hooks/useFetchApplicationData";
+import { useSaveApplicationData } from "../hooks/useSaveApplicationData";
+import type { ApplicationData } from "../Models";
+import styles from "./ApplicationDetail.module.less";
+import { ApplicationDetailDialogs } from "./ApplicationDetailDialogs";
+import { ApplicationDetailError } from "./ApplicationDetailError";
+import { ApplicationDetailFields } from "./ApplicationDetailFields";
+import { ModuleStatusTracker } from "./ModuleStatusTracker";
 
 interface SettingsDetailFormProps {
   onClose?: () => void;
 }
 
-type OverlayType = 'close' | 'delete' | null;
+type OverlayType = "close" | "delete" | null;
 
-export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }) => {
+export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({
+  onClose,
+}) => {
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>(null);
   const [isFormOpen, setIsFormOpen] = useState(true);
 
   // 1. Data Access Layer
-  const { data, isLoading: isDataLoading, error: fetchError, refetch } = useFetchApplicationData();
+  const {
+    data,
+    isLoading: isDataLoading,
+    error: fetchError,
+    refetch,
+  } = useFetchApplicationData();
   const { save, isSaving } = useSaveApplicationData();
 
   // 2. Error Controller
-  const { error: activeError, isCriticalError, handleApiError, clearError } = useErrorController();
+  const {
+    error: activeError,
+    isCriticalError,
+    handleApiError,
+    clearError,
+  } = useErrorController();
 
   // Route any fetch errors to the error controller
   useEffect(() => {
@@ -61,7 +79,7 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }
   };
 
   const handleDelete = () => {
-    alert('Конфигурация удалена!');
+    alert("Конфигурация удалена!");
     setIsFormOpen(false);
     if (onClose) onClose();
   };
@@ -91,7 +109,7 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }
               theme={EButtonTheme.DANGER}
               size={EComponentSize.MD}
               icon={<DeleteStrokeSrvIcon24 paletteIndex={0} />}
-              onClick={() => setActiveOverlay('delete')}
+              onClick={() => setActiveOverlay("delete")}
               title="Удалить"
             />
           )}
@@ -113,7 +131,7 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }
           isOpen={isFormOpen}
           isLoading={isDataLoading || submitting || isSaving}
           isOverlayOpen={isOverlayOpen}
-          onClose={() => setActiveOverlay('close')}
+          onClose={() => setActiveOverlay("close")}
           className={styles.detailBodyWidth}
           dialogsSlot={
             <ApplicationDetailDialogs
@@ -136,13 +154,14 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }
             ) : null
           }
           contentSlot={contentSlot}
-          sidebarSlot={
-            <ModuleStatusTracker />
-          }
+          sidebarSlot={<ModuleStatusTracker />}
           footerSlot={
             <ApplicationFooter
               onSave={handleSubmit}
-              onCancelAttempt={() => setActiveOverlay('close')}
+              onCancelAttempt={() => setActiveOverlay("close")}
+              description={"Какое-то описание"}
+              saveText={"Создать"}
+              cancelText={"Отменить"}
             />
           }
         />

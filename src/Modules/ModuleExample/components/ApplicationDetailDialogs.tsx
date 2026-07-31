@@ -1,7 +1,8 @@
-import React from 'react';
-import { ApplicationTopOverlay } from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
+import React from "react";
 
-type OverlayType = 'close' | 'delete' | null;
+import { ApplicationTopOverlay } from "../../../Components/ApplicationLayout";
+
+type OverlayType = "close" | "delete" | null;
 
 interface ApplicationDetailDialogsProps {
   activeOverlay: OverlayType;
@@ -10,29 +11,30 @@ interface ApplicationDetailDialogsProps {
   onConfirmDelete: () => void;
 }
 
-export const ApplicationDetailDialogs: React.FC<ApplicationDetailDialogsProps> = ({
-  activeOverlay,
-  onClose,
-  onConfirmClose,
-  onConfirmDelete,
-}) => {
+export const ApplicationDetailDialogs: React.FC<
+  ApplicationDetailDialogsProps
+> = ({ activeOverlay, onClose, onConfirmClose, onConfirmDelete }) => {
   return (
     <>
       <ApplicationTopOverlay
-        isOpen={activeOverlay === 'close'}
+        isOpen={activeOverlay === "close"}
         onClose={onClose}
         onConfirm={onConfirmClose}
         title="Внимание"
         subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите покинуть форму редактирования?"
         confirmText="Покинуть форму"
+        cancelText="Отмена"
+        closeTitle="Закрыть"
       />
       <ApplicationTopOverlay
-        isOpen={activeOverlay === 'delete'}
+        isOpen={activeOverlay === "delete"}
         onClose={onClose}
         onConfirm={onConfirmDelete}
         title="Удаление настроек"
         subTitle="Вы действительно хотите удалить конфигурацию настроек? Это действие необратимо."
         confirmText="Удалить"
+        cancelText="Отмена"
+        closeTitle="Закрыть"
       />
     </>
   );

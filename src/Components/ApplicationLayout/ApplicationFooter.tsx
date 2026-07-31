@@ -15,6 +15,10 @@ export interface ApplicationFooterProps {
   onCancelAttempt: () => void;
   canSign?: boolean;
   onSign?: () => void;
+  description: React.ReactNode;
+  saveText: string;
+  cancelText: string;
+  signText?: string;
 }
 
 export const ApplicationFooter: React.FC<ApplicationFooterProps> = ({
@@ -22,23 +26,31 @@ export const ApplicationFooter: React.FC<ApplicationFooterProps> = ({
   onCancelAttempt,
   canSign = false,
   onSign,
+  description,
+  saveText,
+  cancelText,
+  signText,
 }) => {
   return (
     <Page.Footer type={EFooterPageType.FIRST} sticky>
       <Page.Footer.Description>
         <Page.Footer.Description.Content>
-          <Text size={ETextSize.B3} type={EFontType.SECONDARY}>
-            Изменения вступят в силу для всех пользователей организации.
-          </Text>
+          {typeof description === 'string' ? (
+            <Text size={ETextSize.B3} type={EFontType.SECONDARY}>
+              {description}
+            </Text>
+          ) : (
+            description
+          )}
         </Page.Footer.Description.Content>
         <Page.Footer.Description.Controls>
-          {canSign && onSign && (
+          {canSign && onSign && signText && (
             <Button
               theme={EButtonTheme.GENERAL}
               size={EComponentSize.MD}
               onClick={onSign}
             >
-              Подписать
+              {signText}
             </Button>
           )}
           <Button
@@ -46,17 +58,18 @@ export const ApplicationFooter: React.FC<ApplicationFooterProps> = ({
             size={EComponentSize.MD}
             onClick={onSave}
           >
-            Применить
+            {saveText}
           </Button>
           <Button
             theme={EButtonTheme.SECONDARY_LIGHT}
             size={EComponentSize.MD}
             onClick={onCancelAttempt}
           >
-            Отмена
+            {cancelText}
           </Button>
         </Page.Footer.Description.Controls>
       </Page.Footer.Description>
     </Page.Footer>
   );
 };
+

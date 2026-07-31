@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { Form } from 'react-final-form';
+import { Form } from "react-final-form";
 
 import {
   ApplicationFooter,
-} from '../../../Components/ApplicationLayout/ApplicationFooter';
-import {
   ApplicationHeader,
-} from '../../../Components/ApplicationLayout/ApplicationHeader';
-import {
   ApplicationTopOverlay,
-} from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
-import {
   PrefillLayout,
-} from '../../../Components/ApplicationLayout/PrefillLayout';
-import { useSaveApplicationData } from '../hooks/useSaveApplicationData';
-import type { ApplicationData } from '../Models';
-import { ApplicationPrefillFields } from './ApplicationPrefillFields';
+} from "../../../Components/ApplicationLayout";
+import { useSaveApplicationData } from "../hooks/useSaveApplicationData";
+import type { ApplicationData } from "../Models";
+import { ApplicationPrefillFields } from "./ApplicationPrefillFields";
 
 interface ApplicationPrefillProps {
   isOpen: boolean;
@@ -24,7 +18,7 @@ interface ApplicationPrefillProps {
   onSave: () => void;
 }
 
-type OverlayType = 'close' | null;
+type OverlayType = "close" | null;
 
 interface ApplicationFormValues extends ApplicationData {
   confirmCorrectness?: boolean;
@@ -68,7 +62,7 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
   };
 
   const handleCancelAttempt = () => {
-    setActiveOverlay('close');
+    setActiveOverlay("close");
   };
 
   const isOverlayOpen = activeOverlay !== null;
@@ -86,10 +80,10 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
           isOpen={isFormOpen}
           isLoading={isSaving}
           isOverlayOpen={isOverlayOpen}
-          onClose={() => setActiveOverlay('close')}
+          onClose={() => setActiveOverlay("close")}
           dialogsSlot={
             <ApplicationTopOverlay
-              isOpen={activeOverlay === 'close'}
+              isOpen={activeOverlay === "close"}
               onClose={() => setActiveOverlay(null)}
               onConfirm={() => {
                 setIsFormOpen(false);
@@ -98,6 +92,8 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
               title="Внимание"
               subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите покинуть форму?"
               confirmText="Покинуть форму"
+              cancelText="Отмена"
+              closeTitle="Закрыть"
               variant="prefill"
             />
           }
@@ -112,6 +108,9 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
             <ApplicationFooter
               onSave={handleSubmit}
               onCancelAttempt={handleCancelAttempt}
+              description="Изменения вступят в силу для всех пользователей организации."
+              saveText="Применить"
+              cancelText="Отмена"
             />
           }
         />

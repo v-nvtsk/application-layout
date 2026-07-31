@@ -26,7 +26,7 @@ import {
   Title,
 } from '@sberbusiness/triplex-next';
 
-import { AdaptiveTable } from './Components/AdaptiveTable';
+import { AdaptiveTable } from './Components/AdaptiveTable/AdaptiveTable';
 
 export function HostApp() {
   const [activeTab, setActiveTab] = useState<

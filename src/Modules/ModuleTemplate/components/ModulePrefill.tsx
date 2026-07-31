@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { Form } from 'react-final-form';
+import { Form } from "react-final-form";
 
 import {
   ApplicationFooter,
-} from '../../../Components/ApplicationLayout/ApplicationFooter';
-import {
   ApplicationHeader,
-} from '../../../Components/ApplicationLayout/ApplicationHeader';
-import {
   ApplicationTopOverlay,
-} from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
-import {
   PrefillLayout,
-} from '../../../Components/ApplicationLayout/PrefillLayout';
-import type { ModuleData } from '../Models';
-import { useSaveModuleData } from '../hooks/useSaveModuleData';
-import { ModulePrefillFields } from './ModulePrefillFields';
+} from "../../../Components/ApplicationLayout";
+import { useSaveModuleData } from "../hooks/useSaveModuleData";
+import type { ModuleData } from "../Models";
+import { ModulePrefillFields } from "./ModulePrefillFields";
 
 interface ModulePrefillProps {
   isOpen: boolean;
@@ -24,7 +18,7 @@ interface ModulePrefillProps {
   onSave: () => void;
 }
 
-type OverlayType = 'close' | null;
+type OverlayType = "close" | null;
 
 export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   isOpen,
@@ -61,7 +55,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   };
 
   const handleCancelAttempt = () => {
-    setActiveOverlay('close');
+    setActiveOverlay("close");
   };
 
   const isOverlayOpen = activeOverlay !== null;
@@ -79,10 +73,10 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
           isOpen={isFormOpen}
           isLoading={isSaving}
           isOverlayOpen={isOverlayOpen}
-          onClose={() => setActiveOverlay('close')}
+          onClose={() => setActiveOverlay("close")}
           dialogsSlot={
             <ApplicationTopOverlay
-              isOpen={activeOverlay === 'close'}
+              isOpen={activeOverlay === "close"}
               onClose={() => setActiveOverlay(null)}
               onConfirm={() => {
                 setIsFormOpen(false);
@@ -91,6 +85,8 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
               title="Внимание"
               subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите выйти?"
               confirmText="Выйти"
+              cancelText="Отмена"
+              closeTitle="Закрыть"
               variant="prefill"
             />
           }
@@ -105,6 +101,9 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
             <ApplicationFooter
               onSave={handleSubmit}
               onCancelAttempt={handleCancelAttempt}
+              description="Заполните все обязательные поля перед отправкой заявки."
+              saveText="Далее"
+              cancelText="Назад"
             />
           }
         />

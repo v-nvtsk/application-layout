@@ -17,7 +17,8 @@ export interface ApplicationTopOverlayProps {
   title: string;
   subTitle: string;
   confirmText: string;
-  cancelText?: string;
+  cancelText: string;
+  closeTitle: string;
   confirmTheme?: EButtonTheme;
   variant?: 'detail' | 'prefill';
 }
@@ -29,7 +30,8 @@ export const ApplicationTopOverlay: React.FC<ApplicationTopOverlayProps> = ({
   title,
   subTitle,
   confirmText,
-  cancelText = 'Отмена',
+  cancelText,
+  closeTitle,
   confirmTheme = EButtonTheme.DANGER,
   variant = 'detail',
 }) => {
@@ -64,7 +66,7 @@ export const ApplicationTopOverlay: React.FC<ApplicationTopOverlayProps> = ({
           </Button>
         </Confirm.Controls>
         <Confirm.Close
-          title="Закрыть"
+          title={closeTitle}
           clickByEsc={isOpen}
           onClick={onClose}
         />
