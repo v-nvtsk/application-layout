@@ -26,10 +26,13 @@ import {
   Title,
 } from '@sberbusiness/triplex-next';
 
+import { AdaptiveTable } from './Components/AdaptiveTable';
+
 export function HostApp() {
   const [activeTab, setActiveTab] = useState<
     | "dashboard"
     | "payments"
+    | "table-example"
     | "example-prefill"
     | "example-detail"
     | "template-prefill"
@@ -40,6 +43,7 @@ export function HostApp() {
     | "qualification-detail"
   >("dashboard");
   const [mfeLoading, setMfeLoading] = useState(false);
+  const [theme, setTheme] = useState<ETriplexNextTheme>(ETriplexNextTheme.LIGHT);
   const mfeContainerRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +52,7 @@ export function HostApp() {
       tab:
         | "dashboard"
         | "payments"
+        | "table-example"
         | "example-prefill"
         | "example-detail"
         | "template-prefill"
@@ -125,8 +130,8 @@ export function HostApp() {
   }, [activeTab, handleTabChange]);
 
   return (
-    <div ref={hostRef} className="host-container">
-      <ThemeProvider scopeRef={hostRef} theme={ETriplexNextTheme.LIGHT}>
+    <div ref={hostRef} className={`host-container theme-${theme}`}>
+      <ThemeProvider scopeRef={hostRef} theme={theme}>
         {/* Top Header */}
         <header className="host-header">
           <div className="host-logo">
@@ -135,6 +140,20 @@ export function HostApp() {
             <span className="host-badge">HOST SHELL</span>
           </div>
           <div className="host-user">
+            <Button
+              theme={EButtonTheme.SECONDARY}
+              size={EComponentSize.SM}
+              onClick={() =>
+                setTheme((prev) =>
+                  prev === ETriplexNextTheme.LIGHT
+                    ? ETriplexNextTheme.DARK
+                    : ETriplexNextTheme.LIGHT
+                )
+              }
+              className="theme-switcher-btn"
+            >
+              {theme === ETriplexNextTheme.LIGHT ? "🌙 Темная тема" : "☀️ Светлая тема"}
+            </Button>
             <BellStrokeNavIcon20 paletteIndex={0} className="bell-icon" />
             <div className="user-avatar">ИП</div>
             <span className="user-name">Иван Петров</span>
@@ -159,6 +178,13 @@ export function HostApp() {
               >
                 <CashtransitStrokePrdIcon20 paletteIndex={0} />
                 <span>Платежи</span>
+              </button>
+              <button
+                className={`nav-item ${activeTab === "table-example" ? "active" : ""}`}
+                onClick={() => handleTabChange("table-example")}
+              >
+                <AccountsStrokePrdIcon20 paletteIndex={0} />
+                <span>Таблица (Адаптив)</span>
               </button>
               <button
                 className={`nav-item ${activeTab === "example-prefill" ? "active" : ""}`}
@@ -333,6 +359,23 @@ export function HostApp() {
                     Нет исходящих платежей за сегодня
                   </Text>
                 </div>
+              </div>
+            )}
+
+            {activeTab === "table-example" && (
+              <div className="host-card table-example-card">
+                <Title
+                  size={ETitleSize.H1}
+                  className="main-title"
+                  type={EFontType.PRIMARY_INVERT}
+                >
+                  Реестр платежей (Адаптивная таблица)
+                </Title>
+                <Text size={ETextSize.B2} type={EFontType.PRIMARY_INVERT} className="table-subtitle">
+                  Пример большой таблицы с 11 столбцами. На мобильных устройствах включается горизонтальный скролл, а ключевой столбец (Контрагент) остается прижатым (sticky) к левому краю.
+                </Text>
+                
+                <AdaptiveTable />
               </div>
             )}
 

@@ -1,0 +1,164 @@
+@import (reference) '@sberbusiness/triplex-next/helpers/less/breakpoints.less';
+
+.tableResponsiveWrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(25, 27, 34, 0.5);
+
+  @media (max-width: @screen-lg-max) {
+    border: none;
+    background: transparent;
+    overflow-x: visible;
+  }
+}
+
+.customAdaptiveTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+  min-width: 1100px;
+
+  th, td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+  }
+
+  th {
+    background: rgba(255, 255, 255, 0.03);
+    font-weight: 600;
+    color: #a0aec0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  tbody tr:hover {
+    background: rgba(255, 255, 255, 0.015);
+  }
+
+  .textBold {
+    font-weight: 600;
+  }
+
+  .statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+
+    &.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+
+    &.pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    &.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+  }
+
+  /* Sticky First Column on Desktop */
+  th.stickyCol,
+  td.stickyCol {
+    position: sticky;
+    left: 0;
+    background: #111318;
+    z-index: 2;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+  }
+
+  tbody tr:hover td.stickyCol {
+    background: #1a1d24;
+  }
+
+  /* Table to Cards conversion on LG screens (< 1200px) */
+  @media (max-width: @screen-lg-max) {
+    display: block;
+    min-width: 100%;
+
+    thead {
+      display: none;
+    }
+
+    tbody {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+
+      @media (max-width: @screen-sm-max) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    tr {
+      display: block;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    /* Reset sticky columns inside cards */
+    th.stickyCol,
+    td.stickyCol {
+      position: static;
+      background: transparent;
+      box-shadow: none;
+      padding: 8px 0;
+    }
+
+    td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: none;
+      font-size: 13px;
+      box-sizing: border-box;
+      white-space: normal;
+    }
+
+    /* Card Header Styling */
+    td.tablePartnerTitle {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0 0 12px 0;
+      margin-bottom: 12px;
+      text-align: left;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    /* Column name label injection on the left */
+    td:not(.tablePartnerTitle)::before {
+      content: attr(data-label);
+      font-weight: 500;
+      color: #a0aec0;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      margin-right: 16px;
+      display: inline-block;
+    }
+  }
+}
