@@ -1,14 +1,22 @@
-import styles from './ApplicationPrefill.module.less';
-
 import React, { useState } from 'react';
+
 import { Form } from 'react-final-form';
-import { PrefillLayout } from '../../../Components/ApplicationLayout/PrefillLayout';
-import { ApplicationHeader } from '../../../Components/ApplicationLayout/ApplicationHeader';
-import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
-import { ApplicationTopOverlay } from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
-import { ApplicationPrefillFields } from './ApplicationPrefillFields';
+
+import {
+  ApplicationFooter,
+} from '../../../Components/ApplicationLayout/ApplicationFooter';
+import {
+  ApplicationHeader,
+} from '../../../Components/ApplicationLayout/ApplicationHeader';
+import {
+  ApplicationTopOverlay,
+} from '../../../Components/ApplicationLayout/ApplicationTopOverlay';
+import {
+  PrefillLayout,
+} from '../../../Components/ApplicationLayout/PrefillLayout';
 import { useSaveApplicationData } from '../hooks/useSaveApplicationData';
-import type { ApplicationData } from '../hooks/useFetchApplicationData';
+import type { ApplicationData } from '../Models';
+import { ApplicationPrefillFields } from './ApplicationPrefillFields';
 
 interface ApplicationPrefillProps {
   isOpen: boolean;
@@ -17,6 +25,10 @@ interface ApplicationPrefillProps {
 }
 
 type OverlayType = 'close' | null;
+
+interface ApplicationFormValues extends ApplicationData {
+  confirmCorrectness?: boolean;
+}
 
 export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
   isOpen,
@@ -28,8 +40,26 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
 
   const { save, isSaving } = useSaveApplicationData();
 
-  const handleSave = async (values: ApplicationData) => {
-    const success = await save(values);
+  // ==========================================
+  // ТОЧКА ВАЛИДАЦИИ ФОРМЫ (FORM VALIDATION POINT)
+  // ==========================================
+  const handleValidate = (_values: ApplicationFormValues) => {
+    const errors: Record<string, string> = {};
+    // Добавьте логику валидации полей формы здесь. Например:
+    // if (!values.someField) {
+    //   errors.someField = 'Обязательное поле';
+    // }
+    return errors;
+  };
+
+  // ==========================================
+  // ТОЧКА САБМИТА ДАННЫХ ФОРМЫ (FORM SUBMIT POINT)
+  // ==========================================
+  const handleSave = async (values: ApplicationFormValues) => {
+    const { confirmCorrectness, ...dataToSave } = values;
+
+    if (!confirmCorrectness) return;
+    const success = await save(dataToSave);
     if (success) {
       onSave();
       setIsFormOpen(false);
@@ -46,8 +76,9 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
   if (!isFormOpen) return null;
 
   return (
-    <Form
+    <Form<ApplicationFormValues>
       onSubmit={handleSave}
+      validate={handleValidate}
       initialValues={{ confirmCorrectness: false }}
     >
       {({ handleSubmit }) => (
@@ -56,21 +87,19 @@ export const ApplicationPrefill: React.FC<ApplicationPrefillProps> = ({
           isLoading={isSaving}
           isOverlayOpen={isOverlayOpen}
           onClose={() => setActiveOverlay('close')}
-          className={styles.prefillBodyWidth}
           dialogsSlot={
-            activeOverlay === 'close' ? (
-              <ApplicationTopOverlay
-                isOpen={true}
-                onClose={() => setActiveOverlay(null)}
-                onConfirm={() => {
-                  setIsFormOpen(false);
-                  onClose();
-                }}
-                title="Внимание"
-                subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите покинуть форму?"
-                confirmText="Покинуть форму"
-              />
-            ) : null
+            <ApplicationTopOverlay
+              isOpen={activeOverlay === 'close'}
+              onClose={() => setActiveOverlay(null)}
+              onConfirm={() => {
+                setIsFormOpen(false);
+                onClose();
+              }}
+              title="Внимание"
+              subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите покинуть форму?"
+              confirmText="Покинуть форму"
+              variant="prefill"
+            />
           }
           headerSlot={
             <ApplicationHeader

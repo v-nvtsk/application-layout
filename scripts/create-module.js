@@ -41,7 +41,7 @@ if (!/^[A-Z][a-zA-Z0-9]*$/.test(moduleName)) {
 // ─── Пути ────────────────────────────────────────────────────────────
 
 const projectRoot = path.resolve(__dirname, '..');
-const templateDir = path.join(projectRoot, 'src', 'Modules', 'ModuleRawTemplate');
+const templateDir = path.join(projectRoot, 'src', 'Modules', 'ModuleTemplate');
 const targetDir = path.join(projectRoot, 'src', 'Modules', moduleName);
 
 if (!fs.existsSync(templateDir)) {
@@ -75,7 +75,7 @@ function getReplacements(name) {
   const kebab = toKebabCase(name);
   return [
     // Имя экспортируемого компонента/интерфейса точки входа
-    ['ModuleRawTemplate', name],
+    ['ModuleTemplate', name],
     // Имена компонентов Detail/Prefill
     ['ModuleDetail', `${name}Detail`],
     ['ModulePrefill', `${name}Prefill`],
@@ -90,7 +90,7 @@ function getReplacements(name) {
     ['useSaveModuleData', `useSave${name}Data`],
     ['ModuleData', `${name}Data`],
     // API endpoint в хуках
-    ['module-raw-template', kebab],
+    ['module-template', kebab],
   ];
 }
 
@@ -157,7 +157,7 @@ function copyDir(src, dest, replacements, fileRenames) {
 
 // ─── Генерация ───────────────────────────────────────────────────────
 
-console.log(`\n🚀 Генерация модуля "${moduleName}" из шаблона ModuleRawTemplate...\n`);
+console.log(`\n🚀 Генерация модуля "${moduleName}" из шаблона ModuleTemplate...\n`);
 
 const replacements = getReplacements(moduleName);
 const fileRenames = getFileRenames(moduleName);

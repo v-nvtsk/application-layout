@@ -26,8 +26,28 @@ export interface ModuleExampleProps {
   variant?: 'detail' | 'prefill';
 }
 
-export function ModuleExample({ initialOpen = false, onClose, variant = 'detail' }: ModuleExampleProps) {
-  const [activeVariant, setActiveVariant] = useState<'detail' | 'prefill'>(variant);
+export function ModuleExample({
+  initialOpen = true,
+  onClose,
+  variant,
+}: ModuleExampleProps = {}) {
+  // Определяем вариант отображения: приоритет у пропса, затем URL query параметр, затем по умолчанию 'detail'
+  const getActiveVariant = (): 'detail' | 'prefill' => {
+    if (variant) {
+      return variant;
+    }
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlVariant = searchParams.get('variant');
+      if (urlVariant === 'prefill' || urlVariant === 'detail') {
+        return urlVariant as 'detail' | 'prefill';
+      }
+    }
+    return 'detail';
+  };
+
+  const initialVariant = getActiveVariant();
+  const [activeVariant, setActiveVariant] = useState<'detail' | 'prefill'>(initialVariant);
   const [isLightBoxOpen, setIsLightBoxOpen] = useState(initialOpen);
   const appRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +55,8 @@ export function ModuleExample({ initialOpen = false, onClose, variant = 'detail'
     setIsLightBoxOpen(false);
     if (onClose) {
       onClose();
+    } else if (typeof window !== 'undefined' && window.history) {
+      window.history.back();
     }
   };
 

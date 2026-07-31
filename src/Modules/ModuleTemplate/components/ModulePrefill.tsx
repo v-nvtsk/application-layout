@@ -16,7 +16,6 @@ import {
 } from '../../../Components/ApplicationLayout/PrefillLayout';
 import type { ModuleData } from '../Models';
 import { useSaveModuleData } from '../hooks/useSaveModuleData';
-import styles from './ModulePrefill.module.less';
 import { ModulePrefillFields } from './ModulePrefillFields';
 
 interface ModulePrefillProps {
@@ -81,7 +80,6 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
           isLoading={isSaving}
           isOverlayOpen={isOverlayOpen}
           onClose={() => setActiveOverlay('close')}
-          className={styles.prefillBodyWidth}
           dialogsSlot={
             <ApplicationTopOverlay
               isOpen={activeOverlay === 'close'}
@@ -93,6 +91,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
               title="Внимание"
               subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите выйти?"
               confirmText="Выйти"
+              variant="prefill"
             />
           }
           headerSlot={

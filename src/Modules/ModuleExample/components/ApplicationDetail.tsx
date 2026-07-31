@@ -3,12 +3,19 @@ import styles from './ApplicationDetail.module.less';
 import React, { useState, useEffect } from 'react';
 import { Form } from 'react-final-form';
 
-import { useFetchApplicationData, type ApplicationData } from '../hooks/useFetchApplicationData';
+import { useFetchApplicationData } from '../hooks/useFetchApplicationData';
 import { useSaveApplicationData } from '../hooks/useSaveApplicationData';
 import { useErrorController } from '../hooks/useErrorController';
+import type { ApplicationData } from '../Models';
 import { DetailsLayout } from '../../../Components/ApplicationLayout/DetailsLayout';
 import { ApplicationHeader } from '../../../Components/ApplicationLayout/ApplicationHeader';
 import { ApplicationFooter } from '../../../Components/ApplicationLayout/ApplicationFooter';
+import {
+  Button,
+  EButtonTheme,
+  EComponentSize,
+} from '@sberbusiness/triplex-next';
+import { PrintStrokeSrvIcon24, DeleteStrokeSrvIcon24 } from '@sberbusiness/icons-next';
 import { ApplicationDetailFields } from './ApplicationDetailFields';
 import { ModuleStatusTracker } from './ModuleStatusTracker';
 import { ApplicationDetailError } from './ApplicationDetailError';
@@ -68,9 +75,28 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({ onClose }
     <ApplicationHeader
       title="Настройки Личного Кабинета"
       subhead="Просмотр текущей конфигурации профиля (режим чтения)"
-      canDelete={!!data}
-      canPrint={!!data}
-      onDeleteAttempt={() => setActiveOverlay('delete')}
+      controlsSlot={
+        <>
+          {data && (
+            <Button
+              theme={EButtonTheme.SECONDARY_LIGHT}
+              size={EComponentSize.MD}
+              icon={<PrintStrokeSrvIcon24 paletteIndex={0} />}
+              onClick={() => window.print()}
+              title="Печать"
+            />
+          )}
+          {data && (
+            <Button
+              theme={EButtonTheme.DANGER}
+              size={EComponentSize.MD}
+              icon={<DeleteStrokeSrvIcon24 paletteIndex={0} />}
+              onClick={() => setActiveOverlay('delete')}
+              title="Удалить"
+            />
+          )}
+        </>
+      }
     />
   );
 

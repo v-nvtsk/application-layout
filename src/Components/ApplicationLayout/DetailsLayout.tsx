@@ -42,7 +42,7 @@ export const DetailsLayout: React.FC<DetailsLayoutProps> = ({
     <LightBox size={ELightBoxSize.MD} isLoading={isLoading} isTopOverlayOpened={isOverlayOpen}>
       <LightBox.Content>
         {dialogsSlot}
-        <Page className={className}>
+        <Page className={`${styles.detailsPageContainer} ${className || ''}`}>
           {headerSlot}
 
           <Page.Body

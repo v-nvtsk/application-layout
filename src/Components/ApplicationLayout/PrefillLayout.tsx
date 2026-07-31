@@ -40,7 +40,7 @@ export const PrefillLayout: React.FC<PrefillLayoutProps> = ({
     <LightBox size={ELightBoxSize.MD} isLoading={isLoading} isTopOverlayOpened={isOverlayOpen}>
       <LightBox.Content>
         {dialogsSlot}
-        <Page className={className}>
+        <Page className={`${styles.prefillPageContainer} ${className || ''}`}>
           {headerSlot}
 
           <Page.Body

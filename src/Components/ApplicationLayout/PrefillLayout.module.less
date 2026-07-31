@@ -1,3 +1,18 @@
+@import (reference) '@sberbusiness/triplex-next/helpers/less/breakpoints.less';
+
+/* Container for prefill pages with high specificity to override library defaults */
+.prefillPageContainer.prefillPageContainer {
+  width: 100% !important;
+  max-width: 848px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+
+  @media (max-width: @screen-md-max) {
+    padding: 0 16px !important;
+  }
+}
+
 .prefillBodyContent {
   width: 100%;
 }

@@ -8,6 +8,7 @@ import {
   ETitleSize,
   ETextSize,
 } from '@sberbusiness/triplex-next';
+import styles from './ApplicationTopOverlay.module.less';
 
 export interface ApplicationTopOverlayProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export interface ApplicationTopOverlayProps {
   confirmText: string;
   cancelText?: string;
   confirmTheme?: EButtonTheme;
+  variant?: 'detail' | 'prefill';
 }
 
 export const ApplicationTopOverlay: React.FC<ApplicationTopOverlayProps> = ({
@@ -29,10 +31,13 @@ export const ApplicationTopOverlay: React.FC<ApplicationTopOverlayProps> = ({
   confirmText,
   cancelText = 'Отмена',
   confirmTheme = EButtonTheme.DANGER,
+  variant = 'detail',
 }) => {
+  const confirmClass = variant === 'prefill' ? styles.prefillConfirm : styles.detailConfirm;
+
   return (
     <LightBox.TopOverlay opened={isOpen} onClose={onClose}>
-      <Confirm>
+      <Confirm className={confirmClass}>
         <Confirm.Content>
           <Confirm.Content.Title size={ETitleSize.H3}>{title}</Confirm.Content.Title>
           <Confirm.Content.SubTitle size={ETextSize.B3}>

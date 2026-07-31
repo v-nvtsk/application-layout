@@ -1,0 +1,22 @@
+@import (reference) '@sberbusiness/triplex-next/helpers/less/breakpoints.less';
+
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: @screen-sm-max) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.fullWidth {
+  grid-column: span 2;
+
+  @media (max-width: @screen-sm-max) {
+    grid-column: span 1;
+  }
+}

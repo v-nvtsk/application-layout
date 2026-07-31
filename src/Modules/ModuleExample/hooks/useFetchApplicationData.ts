@@ -1,12 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-
-export interface ApplicationData {
-  cardName: string;
-  cardNumber: string;
-  notificationsEnabled: boolean;
-  marketingEmails: boolean;
-  twoFactorEnabled: boolean;
-}
+import type { ApplicationData } from '../Models';
 
 interface FetchError {
   status: number;
