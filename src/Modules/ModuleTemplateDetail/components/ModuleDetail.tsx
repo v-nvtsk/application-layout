@@ -1,16 +1,19 @@
-import React, { useEffect, useCallback } from "react";
+import React, {
+  useCallback,
+  useEffect,
+} from 'react';
 
 import {
   ApplicationHeader,
   DetailsLayout,
-} from "../../../Components/ApplicationLayout";
-import { useErrorController } from "../hooks/useErrorController";
-import { useFetchModuleData } from "../hooks/useFetchModuleData";
-import styles from "./ModuleDetail.module.less";
-import { ModuleDetailDialogs } from "./ModuleDetailDialogs";
-import { ModuleDetailError } from "./ModuleDetailError";
-import { ModuleDetailFields } from "./ModuleDetailFields";
-import { ModuleStatusTracker } from "./ModuleStatusTracker";
+} from '../../../Components/ApplicationLayout';
+import { useErrorController } from '../hooks/useErrorController';
+import { useFetchModuleData } from '../hooks/useFetchModuleData';
+import styles from './ModuleDetail.module.less';
+import { ModuleDetailDialogs } from './ModuleDetailDialogs';
+import { ModuleDetailError } from './ModuleDetailError';
+import { ModuleDetailFields } from './ModuleDetailFields';
+import { ModuleStatusTracker } from './ModuleStatusTracker';
 
 interface ModuleDetailProps {
   onClose?: () => void;
@@ -87,7 +90,7 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
           }
           headerSlot={
             <ApplicationHeader
-              title="Детальная форма (Шаблон)"
+              title="Детальная форма (Шаблон) с очень длинным заголовком, который занимает две строки"
               subhead="[Описание функционала раздела]"
             />
           }

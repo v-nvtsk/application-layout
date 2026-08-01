@@ -10,16 +10,51 @@ export interface ModuleDetailFieldsProps {
 
 /**
  * КОМПОНЕНТ ДЛЯ ОПИСАНИЯ ПОЛЕЙ ДЕТАЛЬНОЙ ФОРМЫ (ШАБЛОН)
- * 
+ *
  * Здесь вы можете разместить ваши бизнес-секции (ApplicationIsland) и поля ввода.
  */
-export const ModuleDetailFields: React.FC<ModuleDetailFieldsProps> = ({ data: _data }) => {
+export const ModuleDetailFields: React.FC<ModuleDetailFieldsProps> = ({
+  data: _data,
+}) => {
   return (
     <>
-      <ApplicationIsland
-        title="[Название секции]"
-        type={EIslandType.TYPE_1}
-      >
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
+        {/* Добавьте сюда поля формы */}
+        {null}
+      </ApplicationIsland>
+      <ApplicationIsland title="[Название секции]" type={EIslandType.TYPE_1}>
         {/* Добавьте сюда поля формы */}
         {null}
       </ApplicationIsland>

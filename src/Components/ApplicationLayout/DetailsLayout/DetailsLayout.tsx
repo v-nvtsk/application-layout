@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import {
   EBodyPageType,
@@ -36,6 +36,37 @@ export const DetailsLayout: React.FC<DetailsLayoutProps> = ({
   errorSlot,
   dialogsSlot,
 }) => {
+  const pageRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState<number>(140);
+
+  useEffect(() => {
+    const pageEl = pageRef.current;
+    if (!pageEl) return;
+
+    const headerEl = pageEl.firstElementChild;
+    if (!headerEl) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const height = entry.target.getBoundingClientRect().height;
+        if (height > 0) {
+          setHeaderHeight(height);
+        }
+      }
+    });
+
+    resizeObserver.observe(headerEl);
+
+    const initialRect = headerEl.getBoundingClientRect();
+    if (initialRect.height > 0) {
+      setHeaderHeight(initialRect.height);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   if (!isOpen) return null;
 
   return (
@@ -46,7 +77,11 @@ export const DetailsLayout: React.FC<DetailsLayoutProps> = ({
     >
       <LightBox.Content>
         {dialogsSlot}
-        <Page className={`${styles.detailsPageContainer} ${className || ""}`}>
+        <Page
+          ref={pageRef}
+          className={`${styles.detailsPageContainer} ${className || ""}`}
+          style={{ '--page-header-height': `${headerHeight}px` } as React.CSSProperties}
+        >
           {headerSlot}
 
           <Page.Body
@@ -74,3 +109,4 @@ export const DetailsLayout: React.FC<DetailsLayoutProps> = ({
     </LightBox>
   );
 };
+

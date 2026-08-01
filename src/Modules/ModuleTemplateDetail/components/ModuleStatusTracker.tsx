@@ -1,17 +1,19 @@
 import React, { useCallback } from 'react';
-import styles from './ModuleStatusTracker.module.less';
+
 import {
+  Button,
+  EButtonTheme,
+  EComponentSize,
   EStatusTrackerType,
   StatusTracker,
   StatusTrackerBody,
   StatusTrackerDescription,
   StatusTrackerHeader,
   StatusTrackerTitle,
-  Button,
-  EButtonTheme,
-  EComponentSize,
 } from '@sberbusiness/triplex-next';
+
 import { useSaveModuleData } from '../hooks/useSaveModuleData';
+import styles from './ModuleStatusTracker.module.less';
 
 export interface ModuleStatusTrackerProps {
   data?: Record<string, unknown>;
@@ -30,7 +32,6 @@ export const ModuleStatusTracker: React.FC<ModuleStatusTrackerProps> = ({ data }
   }, [data, save]);
 
   return (
-    <div className={styles.detailSidebarContainer}>
       <StatusTracker type={EStatusTrackerType.DRAFT} className={styles.detailStatusTracker}>
         <StatusTrackerHeader>
           <StatusTrackerTitle>[Статус документа]</StatusTrackerTitle>
@@ -50,6 +51,5 @@ export const ModuleStatusTracker: React.FC<ModuleStatusTrackerProps> = ({ data }
           </Button>
         </StatusTrackerBody>
       </StatusTracker>
-    </div>
   );
 };
