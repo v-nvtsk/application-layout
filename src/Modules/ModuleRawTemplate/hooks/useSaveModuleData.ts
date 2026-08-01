@@ -1,12 +1,21 @@
-import { useSaveData } from '../../../shared/hooks/useSaveData';
+import { useRequest } from '../../../shared/hooks/useRequest';
+import { ModuleService } from '../services/ModuleService';
 import type { ModuleData } from '../Models';
-
-const API_MODULE_NAME = 'module-raw-template';
 
 /**
  * Хук сохранения данных модуля.
- * Выполняет POST-запрос к /api/v1/module-raw-template/data.
+ * Выполняет POST-запрос к /api/v1/module-raw-template/data через ModuleService.
  */
 export function useSaveModuleData() {
-  return useSaveData<ModuleData>(API_MODULE_NAME);
+  const { execute, isLoading, error, clearError } = useRequest(
+    (data: ModuleData) => ModuleService.saveData(data),
+    { immediate: false },
+  );
+
+  return {
+    save: execute,
+    isSaving: isLoading,
+    saveError: error,
+    clearSaveError: clearError,
+  };
 }

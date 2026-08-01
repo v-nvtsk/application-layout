@@ -1,8 +1,17 @@
-import { useSaveData } from '../../../shared/hooks/useSaveData';
+import { useRequest } from '../../../shared/hooks/useRequest';
+import { ApplicationService } from '../services/ApplicationService';
 import type { ApplicationData } from '../Models';
 
-const API_MODULE_NAME = 'module-example';
-
 export function useSaveApplicationData() {
-  return useSaveData<ApplicationData>(API_MODULE_NAME);
+  const { execute, isLoading, error, clearError } = useRequest(
+    (data: ApplicationData) => ApplicationService.saveData(data),
+    { immediate: false },
+  );
+
+  return {
+    save: execute,
+    isSaving: isLoading,
+    saveError: error,
+    clearSaveError: clearError,
+  };
 }

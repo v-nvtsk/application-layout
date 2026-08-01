@@ -1,7 +1,7 @@
 import React from 'react';
 import { Title, Text, ETitleSize, EFontType, ETextSize, Button, EButtonTheme, EComponentSize } from '@sberbusiness/triplex-next';
 
-export const HostDashboard: React.FC<{ onNavigate: (tab: TabId) => void }> = ({ onNavigate }) => (
+export const HostDashboard: React.FC = () => (
   <div className="host-card">
     <Title size={ETitleSize.H1} className="main-title" type={EFontType.PRIMARY_INVERT}>
       Добро пожаловать в СберБизнес

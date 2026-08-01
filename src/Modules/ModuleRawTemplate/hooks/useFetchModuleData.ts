@@ -1,12 +1,10 @@
-import { useFetchData } from '../../../shared/hooks/useFetchData';
-import type { ModuleData } from '../Models';
-
-const API_MODULE_NAME = 'module-raw-template';
+import { useRequest } from '../../../shared/hooks/useRequest';
+import { ModuleService } from '../services/ModuleService';
 
 /**
  * Хук загрузки данных модуля.
- * Выполняет GET-запрос к /api/v1/module-raw-template/data.
+ * Выполняет GET-запрос к /api/v1/module-raw-template/data через ModuleService.
  */
 export function useFetchModuleData() {
-  return useFetchData<ModuleData>(API_MODULE_NAME);
+  return useRequest(() => ModuleService.getData());
 }

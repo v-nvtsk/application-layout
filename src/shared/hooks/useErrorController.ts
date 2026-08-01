@@ -11,6 +11,9 @@ interface RawApiError {
   status?: number;
   message?: string;
   code?: string;
+  errorCode?: string;
+  errorName?: string;
+  errorDesc?: string;
   validationErrors?: Record<string, string>;
 }
 
@@ -33,8 +36,8 @@ export function useErrorController() {
         (err.status !== undefined && err.status >= 500) ||
         err.status === 403;
       setError({
-        message: err.message || 'Произошла ошибка при обработке запроса.',
-        code: err.code,
+        message: err.errorDesc || err.message || 'Произошла ошибка при обработке запроса.',
+        code: err.errorCode || err.code,
         isCritical,
         fields: err.validationErrors,
       });

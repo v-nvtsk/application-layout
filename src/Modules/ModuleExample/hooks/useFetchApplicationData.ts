@@ -1,8 +1,6 @@
-import { useFetchData } from '../../../shared/hooks/useFetchData';
-import type { ApplicationData } from '../Models';
-
-const API_MODULE_NAME = 'module-example';
+import { useRequest } from '../../../shared/hooks/useRequest';
+import { ApplicationService } from '../services/ApplicationService';
 
 export function useFetchApplicationData() {
-  return useFetchData<ApplicationData>(API_MODULE_NAME);
+  return useRequest(() => ApplicationService.getData());
 }
