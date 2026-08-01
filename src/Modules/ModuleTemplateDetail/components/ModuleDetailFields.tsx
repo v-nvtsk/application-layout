@@ -4,12 +4,16 @@ import { EIslandType } from '@sberbusiness/triplex-next';
 
 import { ApplicationIsland } from '../../../Components/ApplicationIsland';
 
+export interface ModuleDetailFieldsProps {
+  data?: Record<string, unknown>;
+}
+
 /**
  * КОМПОНЕНТ ДЛЯ ОПИСАНИЯ ПОЛЕЙ ДЕТАЛЬНОЙ ФОРМЫ (ШАБЛОН)
  * 
  * Здесь вы можете разместить ваши бизнес-секции (ApplicationIsland) и поля ввода.
  */
-export const ModuleDetailFields: React.FC = () => {
+export const ModuleDetailFields: React.FC<ModuleDetailFieldsProps> = ({ data: _data }) => {
   return (
     <>
       <ApplicationIsland

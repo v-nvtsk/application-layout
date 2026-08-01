@@ -1,12 +1,14 @@
-import React from 'react';
-import styles from './DetailsLayout.module.less';
+import React from "react";
+
 import {
-  LightBox,
-  Page,
-  ELightBoxSize,
   EBodyPageType,
   EBodyPageVerticalMargin,
-} from '@sberbusiness/triplex-next';
+  ELightBoxSize,
+  LightBox,
+  Page,
+} from "@sberbusiness/triplex-next";
+
+import styles from "./DetailsLayout.module.less";
 
 export interface DetailsLayoutProps {
   isOpen: boolean;
@@ -17,8 +19,7 @@ export interface DetailsLayoutProps {
 
   headerSlot?: React.ReactNode;
   contentSlot?: React.ReactNode;
-  sidebarSlot?: React.ReactNode;
-  footerSlot?: React.ReactNode;
+  statusTrackerSlot?: React.ReactNode;
   errorSlot?: React.ReactNode;
   dialogsSlot?: React.ReactNode;
 }
@@ -31,18 +32,21 @@ export const DetailsLayout: React.FC<DetailsLayoutProps> = ({
   className,
   headerSlot,
   contentSlot,
-  sidebarSlot,
-  footerSlot,
+  statusTrackerSlot,
   errorSlot,
   dialogsSlot,
 }) => {
   if (!isOpen) return null;
 
   return (
-    <LightBox size={ELightBoxSize.MD} isLoading={isLoading} isTopOverlayOpened={isOverlayOpen}>
+    <LightBox
+      size={ELightBoxSize.MD}
+      isLoading={isLoading}
+      isTopOverlayOpened={isOverlayOpen}
+    >
       <LightBox.Content>
         {dialogsSlot}
-        <Page className={`${styles.detailsPageContainer} ${className || ''}`}>
+        <Page className={`${styles.detailsPageContainer} ${className || ""}`}>
           {headerSlot}
 
           <Page.Body
@@ -55,19 +59,13 @@ export const DetailsLayout: React.FC<DetailsLayoutProps> = ({
               </div>
             ) : (
               <div className={styles.detailBodyGrid}>
-                <div className={styles.detailBodyLeft}>
-                  {contentSlot}
-                </div>
-                {sidebarSlot && (
-                  <div className={styles.detailBodyRight}>
-                    {sidebarSlot}
-                  </div>
+                <div className={styles.detailBodyLeft}>{contentSlot}</div>
+                {statusTrackerSlot && (
+                  <div className={styles.detailBodyRight}>{statusTrackerSlot}</div>
                 )}
               </div>
             )}
           </Page.Body>
-
-          {!errorSlot && footerSlot}
         </Page>
       </LightBox.Content>
       <LightBox.Controls>

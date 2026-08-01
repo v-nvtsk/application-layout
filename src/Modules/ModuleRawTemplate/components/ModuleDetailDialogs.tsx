@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Button,
   Confirm,
@@ -32,7 +32,6 @@ export const ModuleDetailDialogs: React.FC<ModuleDetailDialogsProps> = ({
         title: 'Внимание',
         subTitle: 'Несохранённые изменения будут утеряны. Продолжить?',
         confirmText: 'Выйти',
-        onConfirm: onConfirmClose,
         confirmTheme: EButtonTheme.DANGER,
       };
     }
@@ -41,12 +40,20 @@ export const ModuleDetailDialogs: React.FC<ModuleDetailDialogsProps> = ({
         title: 'Подтверждение удаления',
         subTitle: 'Вы действительно хотите удалить этот элемент? Это действие необратимо.',
         confirmText: 'Удалить',
-        onConfirm: onConfirmDelete,
         confirmTheme: EButtonTheme.DANGER,
       };
     }
     return null;
   };
+
+  const handleConfirm = useCallback(() => {
+    onClose();
+    if (activeOverlay === 'close') {
+      onConfirmClose();
+    } else if (activeOverlay === 'delete') {
+      onConfirmDelete();
+    }
+  }, [onClose, activeOverlay, onConfirmClose, onConfirmDelete]);
 
   const content = getDialogContent();
 
@@ -73,10 +80,7 @@ export const ModuleDetailDialogs: React.FC<ModuleDetailDialogsProps> = ({
             <Button
               theme={content.confirmTheme}
               size={EComponentSize.MD}
-              onClick={() => {
-                onClose();
-                content.onConfirm();
-              }}
+              onClick={handleConfirm}
             >
               {content.confirmText}
             </Button>

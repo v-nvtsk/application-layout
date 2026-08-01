@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { Form } from 'react-final-form';
 
@@ -53,30 +53,42 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   // ==========================================
   // ТОЧКА ВАЛИДАЦИИ ФОРМЫ (FORM VALIDATION POINT)
   // ==========================================
-  const handleValidate = (_values: ModuleData) => {
+  const handleValidate = useCallback((_values: ModuleData) => {
     const errors: Record<string, string> = {};
     // Добавьте логику валидации полей формы здесь. Например:
     // if (!values.someField) {
     //   errors.someField = 'Обязательное поле';
     // }
     return errors;
-  };
+  }, []);
 
   // ==========================================
   // ТОЧКА САБМИТА ДАННЫХ ФОРМЫ (FORM SUBMIT POINT)
   // ==========================================
-  const handleSave = async (values: ModuleData) => {
-    const success = await save(values);
-    if (success) {
-      onSave();
-      setIsFormOpen(false);
-      onClose();
-    }
-  };
+  const handleSave = useCallback(
+    async (values: ModuleData) => {
+      const success = await save(values);
+      if (success) {
+        onSave();
+        setIsFormOpen(false);
+        onClose();
+      }
+    },
+    [save, onSave, onClose]
+  );
 
-  const handleCancelAttempt = () => {
+  const handleCancelAttempt = useCallback(() => {
     setActiveOverlay('close');
-  };
+  }, []);
+
+  const handleResetOverlay = useCallback(() => {
+    setActiveOverlay(null);
+  }, []);
+
+  const handleConfirmExit = useCallback(() => {
+    setIsFormOpen(false);
+    onClose();
+  }, [onClose]);
 
   const isOverlayOpen = activeOverlay !== null;
 
@@ -95,7 +107,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
           isTopOverlayOpened={isOverlayOpen}
         >
           <LightBox.Content>
-            <LightBox.TopOverlay opened={activeOverlay === 'close'} onClose={() => setActiveOverlay(null)}>
+            <LightBox.TopOverlay opened={activeOverlay === 'close'} onClose={handleResetOverlay}>
               <Confirm>
                 <Confirm.Content>
                   <Confirm.Content.Title size={ETitleSize.H3}>Внимание</Confirm.Content.Title>
@@ -107,17 +119,14 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
                   <Button
                     theme={EButtonTheme.SECONDARY}
                     size={EComponentSize.MD}
-                    onClick={() => setActiveOverlay(null)}
+                    onClick={handleResetOverlay}
                   >
                     Отмена
                   </Button>
                   <Button
                     theme={EButtonTheme.DANGER}
                     size={EComponentSize.MD}
-                    onClick={() => {
-                      setIsFormOpen(false);
-                      onClose();
-                    }}
+                    onClick={handleConfirmExit}
                   >
                     Выйти
                   </Button>
@@ -125,7 +134,7 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
                 <Confirm.Close
                   title="Закрыть"
                   clickByEsc={true}
-                  onClick={() => setActiveOverlay(null)}
+                  onClick={handleResetOverlay}
                 />
               </Confirm>
             </LightBox.TopOverlay>

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { Form } from "react-final-form";
-
 import {
   DeleteStrokeSrvIcon24,
   PrintStrokeSrvIcon24,
@@ -13,14 +11,11 @@ import {
 } from "@sberbusiness/triplex-next";
 
 import {
-  ApplicationFooter,
   ApplicationHeader,
   DetailsLayout,
 } from "../../../Components/ApplicationLayout";
 import { useErrorController } from "../hooks/useErrorController";
 import { useFetchApplicationData } from "../hooks/useFetchApplicationData";
-import { useSaveApplicationData } from "../hooks/useSaveApplicationData";
-import type { ApplicationData } from "../Models";
 import styles from "./ApplicationDetail.module.less";
 import { ApplicationDetailDialogs } from "./ApplicationDetailDialogs";
 import { ApplicationDetailError } from "./ApplicationDetailError";
@@ -46,7 +41,6 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({
     error: fetchError,
     refetch,
   } = useFetchApplicationData();
-  const { save, isSaving } = useSaveApplicationData();
 
   // 2. Error Controller
   const {
@@ -68,14 +62,6 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({
   const handleRetry = () => {
     clearError();
     refetch();
-  };
-
-  const handleSave = async (values: ApplicationData) => {
-    const success = await save(values);
-    if (success) {
-      setIsFormOpen(false);
-      if (onClose) onClose();
-    }
   };
 
   const handleDelete = () => {
@@ -121,51 +107,34 @@ export const ApplicationDetail: React.FC<SettingsDetailFormProps> = ({
   const contentSlot = <ApplicationDetailFields />;
 
   return (
-    <Form
-      onSubmit={handleSave}
-      initialValues={data || {}}
-      subscription={{ submitting: true }}
-    >
-      {({ handleSubmit, submitting }) => (
-        <DetailsLayout
-          isOpen={isFormOpen}
-          isLoading={isDataLoading || submitting || isSaving}
-          isOverlayOpen={isOverlayOpen}
-          onClose={() => setActiveOverlay("close")}
-          className={styles.detailBodyWidth}
-          dialogsSlot={
-            <ApplicationDetailDialogs
-              activeOverlay={activeOverlay}
-              onClose={() => setActiveOverlay(null)}
-              onConfirmClose={() => {
-                setIsFormOpen(false);
-                if (onClose) onClose();
-              }}
-              onConfirmDelete={handleDelete}
-            />
-          }
-          headerSlot={headerSlot}
-          errorSlot={
-            isCriticalError && activeError ? (
-              <ApplicationDetailError
-                message={activeError.message}
-                onRetry={handleRetry}
-              />
-            ) : null
-          }
-          contentSlot={contentSlot}
-          sidebarSlot={<ModuleStatusTracker />}
-          footerSlot={
-            <ApplicationFooter
-              onSave={handleSubmit}
-              onCancelAttempt={() => setActiveOverlay("close")}
-              description={"Какое-то описание"}
-              saveText={"Создать"}
-              cancelText={"Отменить"}
-            />
-          }
+    <DetailsLayout
+      isOpen={isFormOpen}
+      isLoading={isDataLoading}
+      isOverlayOpen={isOverlayOpen}
+      onClose={() => setActiveOverlay("close")}
+      className={styles.detailBodyWidth}
+      dialogsSlot={
+        <ApplicationDetailDialogs
+          activeOverlay={activeOverlay}
+          onClose={() => setActiveOverlay(null)}
+          onConfirmClose={() => {
+            setIsFormOpen(false);
+            if (onClose) onClose();
+          }}
+          onConfirmDelete={handleDelete}
         />
-      )}
-    </Form>
+      }
+      headerSlot={headerSlot}
+      errorSlot={
+        isCriticalError && activeError ? (
+          <ApplicationDetailError
+            message={activeError.message}
+            onRetry={handleRetry}
+          />
+        ) : null
+      }
+      contentSlot={contentSlot}
+      statusTrackerSlot={<ModuleStatusTracker />}
+    />
   );
 };

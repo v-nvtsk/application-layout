@@ -1,16 +1,11 @@
-import React, { useEffect } from "react";
-
-import { Form } from "react-final-form";
+import React, { useEffect, useCallback } from "react";
 
 import {
-  ApplicationFooter,
   ApplicationHeader,
   DetailsLayout,
 } from "../../../Components/ApplicationLayout";
 import { useErrorController } from "../hooks/useErrorController";
 import { useFetchModuleData } from "../hooks/useFetchModuleData";
-import { useSaveModuleData } from "../hooks/useSaveModuleData";
-import type { ModuleData } from "../Models";
 import styles from "./ModuleDetail.module.less";
 import { ModuleDetailDialogs } from "./ModuleDetailDialogs";
 import { ModuleDetailError } from "./ModuleDetailError";
@@ -33,7 +28,6 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
     error: fetchError,
     refetch,
   } = useFetchModuleData();
-  const { save, isSaving } = useSaveModuleData();
   const {
     error: activeError,
     isCriticalError,
@@ -49,48 +43,46 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
     }
   }, [fetchError, handleApiError, clearError]);
 
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     clearError();
     refetch();
-  };
+  }, [clearError, refetch]);
 
-  const handleSave = async (values: ModuleData) => {
-    const success = await save(values);
-    if (success) {
-      setIsFormOpen(false);
-      if (onClose) onClose();
-    }
-  };
+  const handleResetOverlay = useCallback(() => {
+    setActiveOverlay(null);
+  }, []);
+
+  const handleTriggerCloseOverlay = useCallback(() => {
+    setActiveOverlay("close");
+  }, []);
+
+  const handleConfirmClose = useCallback(() => {
+    setIsFormOpen(false);
+    if (onClose) onClose();
+  }, [onClose]);
+
+  const handleConfirmDelete = useCallback(() => {
+    setIsFormOpen(false);
+    if (onClose) onClose();
+  }, [onClose]);
 
   const isOverlayOpen = activeOverlay !== null;
 
   if (!isFormOpen) return null;
 
   return (
-    <Form
-      onSubmit={handleSave}
-      initialValues={data || {}}
-      subscription={{ submitting: true }}
-    >
-      {({ handleSubmit, submitting }) => (
-        <DetailsLayout
-          isOpen={isFormOpen}
-          isLoading={isDataLoading || submitting || isSaving}
+    <DetailsLayout
+      isOpen={isFormOpen}
+      isLoading={isDataLoading}
           isOverlayOpen={isOverlayOpen}
-          onClose={() => setActiveOverlay("close")}
+          onClose={handleTriggerCloseOverlay}
           className={styles.detailBodyWidth}
           dialogsSlot={
             <ModuleDetailDialogs
               activeOverlay={activeOverlay}
-              onClose={() => setActiveOverlay(null)}
-              onConfirmClose={() => {
-                setIsFormOpen(false);
-                if (onClose) onClose();
-              }}
-              onConfirmDelete={() => {
-                setIsFormOpen(false);
-                if (onClose) onClose();
-              }}
+              onClose={handleResetOverlay}
+              onConfirmClose={handleConfirmClose}
+              onConfirmDelete={handleConfirmDelete}
             />
           }
           headerSlot={
@@ -107,19 +99,8 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
               />
             ) : null
           }
-          contentSlot={<ModuleDetailFields />}
-          sidebarSlot={<ModuleStatusTracker />}
-          footerSlot={
-            <ApplicationFooter
-              onSave={handleSubmit}
-              onCancelAttempt={() => setActiveOverlay("close")}
-              description="Внимание! Изменения вступят в силу немедленно."
-              saveText="Сохранить"
-              cancelText="Отменить"
-            />
-          }
-        />
-      )}
-    </Form>
+      contentSlot={<ModuleDetailFields data={data} />}
+      statusTrackerSlot={<ModuleStatusTracker data={data} />}
+    />
   );
 };

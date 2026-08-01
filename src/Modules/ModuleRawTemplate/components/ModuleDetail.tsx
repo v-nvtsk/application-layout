@@ -1,17 +1,11 @@
 import styles from './ModuleDetail.module.less';
 
-import React, { useEffect } from 'react';
-
-import { Form } from 'react-final-form';
+import React, { useEffect, useCallback } from 'react';
 
 import {
-  Button,
   EBodyPageType,
   EBodyPageVerticalMargin,
-  EButtonTheme,
-  EComponentSize,
   EFontType,
-  EFooterPageType,
   EHeaderPageType,
   ELightBoxSize,
   ETextSize,
@@ -24,8 +18,6 @@ import {
 
 import { useErrorController } from '../hooks/useErrorController';
 import { useFetchModuleData } from '../hooks/useFetchModuleData';
-import { useSaveModuleData } from '../hooks/useSaveModuleData';
-import type { ModuleData } from '../Models';
 import { ModuleDetailDialogs } from './ModuleDetailDialogs';
 import { ModuleDetailError } from './ModuleDetailError';
 import { ModuleDetailFields } from './ModuleDetailFields';
@@ -49,7 +41,6 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
 
   // 1. Data Access Layer — реальные fetch-запросы
   const { data, isLoading: isDataLoading, error: fetchError, refetch } = useFetchModuleData();
-  const { save, isSaving } = useSaveModuleData();
 
   // 2. Error Controller
   const { error: activeError, isCriticalError, handleApiError, clearError } = useErrorController();
@@ -63,44 +54,38 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
     }
   }, [fetchError, handleApiError, clearError]);
 
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     clearError();
     refetch();
-  };
+  }, [clearError, refetch]);
 
-  const handleSave = async (values: ModuleData) => {
-    const success = await save(values);
-    if (success) {
-      setIsFormOpen(false);
-      if (onClose) onClose();
-    }
-  };
-
-  const handleCloseForm = () => {
+  const handleCloseForm = useCallback(() => {
     setIsFormOpen(false);
     if (onClose) onClose();
-  };
+  }, [onClose]);
+
+  const handleResetOverlay = useCallback(() => {
+    setActiveOverlay(null);
+  }, []);
+
+  const handleTriggerCloseOverlay = useCallback(() => {
+    setActiveOverlay('close');
+  }, []);
 
   const isOverlayOpen = activeOverlay !== null;
 
   if (!isFormOpen) return null;
 
   return (
-    <Form
-      onSubmit={handleSave}
-      initialValues={data || {}}
-      subscription={{ submitting: true }}
+    <LightBox 
+      size={ELightBoxSize.MD} 
+      isLoading={isDataLoading} 
+      isTopOverlayOpened={isOverlayOpen}
     >
-      {({ handleSubmit, submitting }) => (
-        <LightBox 
-          size={ELightBoxSize.MD} 
-          isLoading={isDataLoading || submitting || isSaving} 
-          isTopOverlayOpened={isOverlayOpen}
-        >
           <LightBox.Content>
             <ModuleDetailDialogs
               activeOverlay={activeOverlay}
-              onClose={() => setActiveOverlay(null)}
+              onClose={handleResetOverlay}
               onConfirmClose={handleCloseForm}
               onConfirmDelete={handleCloseForm}
             />
@@ -136,49 +121,19 @@ export const ModuleDetail: React.FC<ModuleDetailProps> = ({ onClose }) => {
                 ) : (
                   <div className={styles.detailBodyGrid}>
                     <div className={styles.detailBodyLeft}>
-                      <ModuleDetailFields />
+                      <ModuleDetailFields data={data} />
                     </div>
                     <div className={styles.detailBodyRight}>
-                      <ModuleStatusTracker />
+                      <ModuleStatusTracker data={data} />
                     </div>
                   </div>
                 )}
               </Page.Body>
-
-              {!(isCriticalError && activeError) && (
-                <Page.Footer type={EFooterPageType.FIRST} sticky>
-                  <Page.Footer.Description>
-                    <Page.Footer.Description.Content>
-                      <Text size={ETextSize.B3} type={EFontType.SECONDARY}>
-                        Изменения вступят в силу после сохранения.
-                      </Text>
-                    </Page.Footer.Description.Content>
-                    <Page.Footer.Description.Controls>
-                      <Button
-                        theme={EButtonTheme.GENERAL}
-                        size={EComponentSize.MD}
-                        onClick={handleSubmit}
-                      >
-                        Сохранить
-                      </Button>
-                      <Button
-                        theme={EButtonTheme.SECONDARY_LIGHT}
-                        size={EComponentSize.MD}
-                        onClick={() => setActiveOverlay('close')}
-                      >
-                        Отмена
-                      </Button>
-                    </Page.Footer.Description.Controls>
-                  </Page.Footer.Description>
-                </Page.Footer>
-              )}
             </Page>
           </LightBox.Content>
           <LightBox.Controls>
-            <LightBox.Controls.Close onClick={() => setActiveOverlay('close')} />
+            <LightBox.Controls.Close onClick={handleTriggerCloseOverlay} />
           </LightBox.Controls>
         </LightBox>
-      )}
-    </Form>
   );
 };

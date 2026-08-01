@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 import { Form } from "react-final-form";
 
@@ -33,30 +33,46 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
   // ==========================================
   // ТОЧКА ВАЛИДАЦИИ ФОРМЫ (FORM VALIDATION POINT)
   // ==========================================
-  const handleValidate = (_values: ModuleData) => {
+  const handleValidate = useCallback((_values: ModuleData) => {
     const errors: Record<string, string> = {};
     // Добавьте логику валидации полей формы здесь. Например:
     // if (!values.someField) {
     //   errors.someField = 'Обязательное поле';
     // }
     return errors;
-  };
+  }, []);
 
   // ==========================================
   // ТОЧКА САБМИТА ДАННЫХ ФОРМЫ (FORM SUBMIT POINT)
   // ==========================================
-  const handleSave = async (values: ModuleData) => {
-    const success = await save(values);
-    if (success) {
-      onSave();
-      setIsFormOpen(false);
-      onClose();
-    }
-  };
+  const handleSave = useCallback(
+    async (values: ModuleData) => {
+      const success = await save(values);
+      if (success) {
+        onSave();
+        setIsFormOpen(false);
+        onClose();
+      }
+    },
+    [save, onSave, onClose]
+  );
 
-  const handleCancelAttempt = () => {
+  const handleCancelAttempt = useCallback(() => {
     setActiveOverlay("close");
-  };
+  }, []);
+
+  const handleResetOverlay = useCallback(() => {
+    setActiveOverlay(null);
+  }, []);
+
+  const handleConfirmExit = useCallback(() => {
+    setIsFormOpen(false);
+    onClose();
+  }, [onClose]);
+
+  const handleTriggerCloseOverlay = useCallback(() => {
+    setActiveOverlay("close");
+  }, []);
 
   const isOverlayOpen = activeOverlay !== null;
 
@@ -73,15 +89,12 @@ export const ModulePrefill: React.FC<ModulePrefillProps> = ({
           isOpen={isFormOpen}
           isLoading={isSaving}
           isOverlayOpen={isOverlayOpen}
-          onClose={() => setActiveOverlay("close")}
+          onClose={handleTriggerCloseOverlay}
           dialogsSlot={
             <ApplicationTopOverlay
               isOpen={activeOverlay === "close"}
-              onClose={() => setActiveOverlay(null)}
-              onConfirm={() => {
-                setIsFormOpen(false);
-                onClose();
-              }}
+              onClose={handleResetOverlay}
+              onConfirm={handleConfirmExit}
               title="Внимание"
               subTitle="Несохранённые данные будут утеряны. Вы уверены, что хотите выйти?"
               confirmText="Выйти"

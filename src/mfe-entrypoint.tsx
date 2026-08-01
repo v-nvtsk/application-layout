@@ -13,8 +13,13 @@ export async function mount(container: HTMLElement, props: MfeProps = {}) {
   
   switch (props.mode) {
     case 'template': {
-      const { ModuleTemplate } = await import('./Modules/ModuleTemplate');
-      Component = ModuleTemplate;
+      if (props.variant === 'prefill') {
+        const { ModuleTemplatePrefill } = await import('./Modules/ModuleTemplatePrefill');
+        Component = ModuleTemplatePrefill;
+      } else {
+        const { ModuleTemplateDetail } = await import('./Modules/ModuleTemplateDetail');
+        Component = ModuleTemplateDetail;
+      }
       break;
     }
     case 'raw': {

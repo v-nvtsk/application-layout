@@ -8,10 +8,14 @@ import {
 } from '@sberbusiness/triplex-next';
 import styles from './ModuleDetail.module.less';
 
+export interface ModuleDetailFieldsProps {
+  data?: Record<string, unknown>;
+}
+
 /**
  * КОМПОНЕНТ ПОЛЕЙ НА "ГОЛЫХ" КОМПОНЕНТАХ (RAW ШАБЛОН)
  */
-export const ModuleDetailFields: React.FC = () => {
+export const ModuleDetailFields: React.FC<ModuleDetailFieldsProps> = ({ data: _data }) => {
   return (
     <>
       <Island type={EIslandType.TYPE_1}>
